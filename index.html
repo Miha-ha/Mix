@@ -10,7 +10,8 @@
         <script>
             var m1 = Mod.config({
                 synchronous: false, 
-                prefixPath: 'src'
+                prefixPath: '/',
+                nocache: false
             }).module({
                 name: 'main',
                 requires: ['m2', 'm3', 'utils.m5'],

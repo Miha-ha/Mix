@@ -14,7 +14,7 @@
         nocache: '',
         modules: {},
         download: [],
-        prefixPath: '',
+        prefixPath: '/',
         synchronous: false,
         getClassName: function(classPath){
             var path = classPath.split('.');
@@ -111,7 +111,7 @@
             console.log('progress: '+Math.round(p)+'%');
         },
         loadScript: function(name, requiredFrom){
-            var url = '/' + name.replace(/\./g, '/') + '.js' + this.nocache;
+            var url = this.prefixPath + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache='+new Date().getTime() : '');
             this.modules[name] = {
                 name: name,
                 requires: [],
