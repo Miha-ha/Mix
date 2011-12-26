@@ -1,0 +1,24 @@
+Mod.define('nameClass',{
+	extend: 'baseClass',
+	init: function(){
+	}
+});
+
+//как может обыть реализавана define
+define: function(className, config){
+	var parent = config.extend || Class;
+	var className = parent.extend(config);
+}
+
+//если классы создаются в глобальном контексте
+window[className] = Class.extend(config);
+
+
+var Person = Class.extend({
+  init: function(isDancing){
+    this.dancing = isDancing;
+  },
+  dance: function(){
+    return this.dancing;
+  }
+});
