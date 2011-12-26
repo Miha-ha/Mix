@@ -8,11 +8,14 @@
 
         <script src="mod.js"></script>
         <script>
-            var m1 = Mod.config({prefixPath: 'src'}).module({
+            var m1 = Mod.config({
+                synchronous: false, 
+                prefixPath: 'src'
+            }).module({
                 name: 'main',
                 requires: ['m2', 'm3', 'utils.m5'],
                 body: function(){
-                    alert(Mod.prefixPath);
+                    //alert(Mod.prefixPath);
                     console.log('main');
                 }
             })

@@ -15,6 +15,7 @@
         modules: {},
         download: [],
         prefixPath: '',
+        synchronous: false,
         getClassName: function(classPath){
             var path = classPath.split('.');
             return path[path.length-1];
@@ -110,20 +111,78 @@
             console.log('progress: '+Math.round(p)+'%');
         },
         loadScript: function(name, requiredFrom){
+            var url = '/' + name.replace(/\./g, '/') + '.js' + this.nocache;
             this.modules[name] = {
                 name: name,
                 requires: [],
                 loaded: false,
                 body: null
             };
-            var url = '/' + name.replace(/\./g, '/') + '.js' + this.nocache;
+            
             this.loadingCount++;
-            this.injectScript(url, function(){
-                this.loadingCount--;
-                this.process();
-            }, function(){
-                throw ('Failed to load module ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
-            }, this)
+            if(this.sinchronous){
+                this.injectScript(url, function(){
+                    this.loadingCount--;
+                    this.process();
+                }, function(){
+                    throw ('Failed to load module ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
+                }, this)
+            }else{
+                this.loadXHRScript(url, function(){
+                    this.loadingCount--;
+                    this.process();
+                }, function(){
+                    throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
+                }, this)
+            }
+        },
+        loadXHRScript: function(url, onLoad, onError, scope){
+            var isCrossOriginRestricted = false,
+                fileName = url.split('/').pop(),
+                xhr, status, onScriptError;
+
+            if (typeof XMLHttpRequest !== 'undefined') {
+                xhr = new XMLHttpRequest();
+            } else {
+                xhr = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            try {
+                xhr.open('GET', url, false);
+                xhr.send(null);
+            } catch (e) {
+                isCrossOriginRestricted = true;
+            }
+
+            status = (xhr.status === 1223) ? 204 : xhr.status;
+
+            if (!isCrossOriginRestricted) {
+                isCrossOriginRestricted = (status === 0);
+            }
+
+            if (isCrossOriginRestricted
+                ) {
+                onError.call(this, "Failed loading synchronously via XHR: '" + url + "'; It's likely that the file is either " +
+                    "being loaded from a different domain or from the local file system whereby cross origin " +
+                    "requests are not allowed due to security reasons. Use asynchronous loading with " +
+                    "Ext.require instead.", this.synchronous);
+            }
+            else if (status >= 200 && status < 300
+                ) {
+                // Firebug friendly, file names are still shown even though they're eval'ed code
+                new Function(xhr.responseText + "\n//@ sourceURL=" + fileName)();
+
+                onLoad.call(scope);
+            }
+            else {
+                onError.call(this, "Failed loading synchronously via XHR: '" + url + "'; please " +
+                    "verify that the file exists. " +
+                    "XHR status code: " + status, this.synchronous);
+            }
+
+            // Prevent potential IE memory leak
+            xhr = null;
+            
         },
         injectScript: function(url, onLoad, onError, scope){
             var script = document.createElement('script'),
