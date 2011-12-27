@@ -1,8 +1,8 @@
 Mod.define('classes.c1', {
-    init: function(){
+    init:function () {
         console.log('clases c1 is init!');
     },
-    log: function(){
+    log:function () {
         console.log('classes log c1');
     }
 });
