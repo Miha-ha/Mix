@@ -1,21 +1,16 @@
-/*
- var m1 = Mod.module({
- name: 'm1',
- requires: ['m2', 'm3'],
- body: function(){
- }
- });
- */
-
+//TODO: добавить namespace
 (function () {
     Mod = {
-        count:0,
-        loadingCount:0,
-        nocache:'',
-        modules:{},
-        download:[],
+        //------------config----------
+        nocache:false,
         prefixPath:'/',
         synchronous:false,
+        //----------private members---------
+        _count:0,
+        _loadingCount:0,
+        _modules:{},
+        _download:[],
+
         getClassName:function (classPath) {
             var path = classPath.split('.');
             return path[path.length - 1];
@@ -42,6 +37,7 @@
             return this.apply(this, config);
         },
         define:function (classPath, config) {
+            //TODO: разабраться с именем класса: ClassName или Full.Path.ClassName
             var className = this.getClassName(classPath);
             var requires = [];
             if (config.extend != undefined) {
@@ -60,46 +56,46 @@
         },
         module:function (config) {
             config.loaded = false;
-            this.modules[config.name] = config;
-            this.download.push(config);
-            this.count++;
+            this._modules[config.name] = config;
+            this._download.push(config);
+            this._count++;
             //TODO: подписаться на событие onReady
             this.process();
         },
         process:function () {
             var modulesLoaded = false;
             //TODO: while
-            for (var i = 0; i < this.download.length; ++i) {
-                var m = this.download[i];
+            for (var i = 0; i < this._download.length; ++i) {
+                var m = this._download[i];
                 var requiresLoaded = true;
                 for (var r = 0; r < m.requires.length; ++r) {
                     var req = m.requires[r];
 
-                    if (!this.modules[req]) {
+                    if (!this._modules[req]) {
                         requiresLoaded = false;
                         this.loadScript(req, m.name);
-                    } else if (!this.modules[req].loaded) {
+                    } else if (!this._modules[req].loaded) {
                         requiresLoaded = false;
                     }
                 }
 
                 if (requiresLoaded && m.body) {
-                    this.download.splice(i, 1);
+                    this._download.splice(i, 1);
                     m.loaded = true;
                     m.body();
                     modulesLoaded = true;
                     i--;
 
-                    this.onProgress(this.count, this.count - this.download.length);
+                    this.onProgress(this._count, this._count - this._download.length);
                 }
             }
 
             if (modulesLoaded) {
                 this.process();
-            } else if (/*!ig.baked && */this.loadingCount == 0 && this.download.length != 0) {
+            } else if (/*!ig.baked && */this._loadingCount == 0 && this._download.length != 0) {
                 var unresolved = [];
-                for (i = 0; i < this.download.length; i++) {
-                    unresolved.push(this.download[i].name);
+                for (i = 0; i < this._download.length; i++) {
+                    unresolved.push(this._download[i].name);
                 }
                 throw ('Unresolved (circular?) dependencies: ' + unresolved.join(', '));
             }
@@ -111,24 +107,24 @@
         },
         loadScript:function (name, requiredFrom) {
             var url = this.prefixPath + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');
-            this.modules[name] = {
+            this._modules[name] = {
                 name:name,
                 requires:[],
                 loaded:false,
                 body:null
             };
 
-            this.loadingCount++;
+            this._loadingCount++;
             if (this.synchronous) {
                 this.injectScript(url, function () {
-                    this.loadingCount--;
+                    this._loadingCount--;
                     this.process();
                 }, function () {
                     throw ('Failed to load module ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
                 }, this)
             } else {
                 this.loadXHRScript(url, function () {
-                    this.loadingCount--;
+                    this._loadingCount--;
                     this.process();
                 }, function () {
                     throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);

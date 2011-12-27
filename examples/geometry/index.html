@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mod simple example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<script src="../../mod.js"></script>
+<script>
+    Mod.config({
+        synchronous:false,
+        prefixPath:'/examples/geometry/',
+        nocache:true
+    }).module({
+                name:'main',
+                requires:['Point'], //, 'size', 'rectangle'
+                body:function () {
+                    var p1 = new Point(10, 10);
+                    alert(p1.toString());
+                }
+            });
+</script>
+</body>
+</html>
