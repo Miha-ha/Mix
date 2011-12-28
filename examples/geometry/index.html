@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mod simple example</title>
+    <title>Mod geometry example</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
@@ -9,15 +9,23 @@
 <script src="../../mod.js"></script>
 <script>
     Mod.config({
-        synchronous:false,
-        prefixPath:'/examples/geometry/',
-        nocache:true
+        synchronous:true,
+        prefixPath:'',
+        nocache:false
     }).module({
                 name:'main',
-                requires:['Point'], //, 'size', 'rectangle'
+                requires:['Point', 'Size', 'Rectangle'],
                 body:function () {
-                    var p1 = new Point(10, 10);
-                    alert(p1.toString());
+                    var p = new Point(10, 10);
+                    alert(p);
+                    var size = new Size(100, 100);
+                    alert(size);
+                    var rect = new Rectangle(p, size);
+                    alert(rect);
+                    p.x = 20;
+                    alert(p);
+                    var p2 = new Point(40, 10);
+                    alert(p.getDistance(p2, false));
                 }
             });
 </script>
