@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mod canvas example</title>
+    <style type="text/css">
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: arial, monospace;
+            font-size: 120%;
+        }
+
+        .wrap {
+            /*width: 640px;*/
+            /*margin: 0 auto;*/
+        }
+
+        canvas {
+            border: 0px solid #0f0;
+
+        }
+
+        a {
+            color: #0f0;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+    </script>
+
+</head>
+<body onresize="resizeCanvas()">
+<div class="wrap">
+    <div id="stats"></div>
+    <canvas id="Canvas2D">No bunnies for you! Come back in... one year!</canvas>
+</div>
+<script src="../../mod.js"></script>
+<script>
+
+
+    Mod.config({
+        synchronous:true,
+        prefixPath:'',
+        nocache:false
+    }).module({
+                name:'main',
+                requires:['bunny', 'stats'],
+                body:function () {
+                    resizeCanvas = function () {
+                        canvas = document.getElementById("Canvas2D");
+                        if (canvas.width < window.innerWidth) {
+                            canvas.width = window.innerWidth;
+                        }
+
+                        if (canvas.height < window.innerHeight) {
+                            canvas.height = window.innerHeight;
+                        }
+
+                        //TODO: переделать инициализацию при изменении размера браузера
+                        setupBunny(canvas.width, canvas.height);
+                    };
+                    requestAnimFrame = (function () {
+                        return window.requestAnimationFrame ||
+                                window.webkitRequestAnimationFrame ||
+                                window.mozRequestAnimationFrame ||
+                                window.oRequestAnimationFrame ||
+                                window.msRequestAnimationFrame ||
+                                function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+                                    window.setTimeout(callback, 1000 / 60);
+                                };
+                    })();
+
+                    if (typeof Stats == 'function') {
+                        //clearInterval(interval);
+                        var stats = new Stats();
+                        stats.domElement.style.position = 'fixed';
+                        stats.domElement.style.left = '0px';
+                        stats.domElement.style.top = '0px';
+                        document.body.appendChild(stats.domElement);
+                        setInterval(function () {
+                            stats.update();
+                        }, 1000 / 60);
+
+                    }
+
+                    resizeCanvas();
+
+                }
+            });
+</script>
+</body>
+</html>
