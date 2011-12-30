@@ -14,7 +14,7 @@ Mod.module({
             bcolor = "rgba(200, 200, 255, 1)";
 
         window.setupBunny = function (width, height) {
-            var numBunnies = 10000,
+            var numBunnies = 1000,
                 gravity = 3,
                 bunnies = [],
                 maxX = width,
