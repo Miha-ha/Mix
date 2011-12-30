@@ -3,14 +3,26 @@
     Mod = {
         //------------config----------
         nocache:false,
-        prefixPath:'/',
+        prefixPath:'',
         synchronous:false,
         //----------private members---------
         _count:0,
         _loadingCount:0,
         _modules:{},
         _download:[],
+        namespace:function (namespaces) {
+            var ns = namespaces.split('.'),
+                current = window[ns[0]];
 
+            if (current === undefined) {
+                current = window[ns[0]] = {};
+            }
+
+            for (var i = 0; i < ns.length; ++i) {
+                current = current[ns[i]] = current[ns[i]] || {};
+            }
+            return current;
+        },
         getClassName:function (classPath) {
             var path = classPath.split('.');
             return path[path.length - 1];
