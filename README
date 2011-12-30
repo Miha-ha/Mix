@@ -2,9 +2,55 @@ MOD - бибилиотека облегчающая написание моду�
 Возможности:
     + динамическая загрузка зависимых модулей
     + классическое ООП от Jhon Resig
+    + динамическая загрузка наследуемых классов
 
 
-Наименование модулей(модули именуются маленькими буквами)
-    1. modulename - загрузка файла "modulename" из текущего каталога
-    2. super.module.name - загрузка файла "name" по пути /super/module
-Наименование классов(классы имменуются с большой буквы)
+Наименование модулей(модули именуются маленькими буквами):
+    1. modulename - загрузка файла "modulename" из текущего каталога. Namespace = window
+    2. super.module.name - загрузка файла "name" из каталога "super/module/". Namespace = super.global
+Наименование классов(классы имменуются с большой буквы):
+    1. ClassName  - загрузка файла "classname" из текущего каталога. Namespace = window
+    2. Super.Class.Name - Загрузка файла "name" из каталога "super/class/". Namespace = Super.Class
+
+Пример определения и использования класса Point:
+//определение класса. Файл Mathematics/Geometry/Point.js
+Mod.define('Mathematics.Geometry.Point', {
+    init:function (x, y) {
+        this.x = x;
+        this.y = y;
+    },
+    getDistance:function (point, squared) {
+        var x = point.x - this.x,
+            y = point.y - this.y,
+            g = x * x + y * y;
+        return squared ? g : Math.sqrt(g);
+    },
+    toString:function () {
+        return "{ x:" + this.x + ", y:" + this.y + " }";
+    }
+});
+//Использование класса. Файл index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mod geometry example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<script src="../../mod.js"></script>
+<script>
+    Mod.config({
+        synchronous:true,
+        prefixPath:'',
+        nocache:false
+    }).module({
+                name:'main',
+                requires:['Mathematics.Geometry.Point'],
+                body:function () {
+                    var p = new Mathematics.Geometry.Point(10, 20);
+                    alert(p);
+                }
+            });
+</script>
+</body>
+</html>

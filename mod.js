@@ -28,9 +28,6 @@
             var path = classPath.split('.');
             return path[path.length - 1];
         },
-        setNocache:function (flag) {
-            this.nocache = flag ? '?' + Math.random().toString().substr(2) : '';
-        },
         $:function (selector) {
             return selector.charAt(0) == '#' ? document.getElementById(selector.substr(1)) : document.getElementsByTagName(selector);
         },
