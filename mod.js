@@ -10,6 +10,7 @@
         _loadingCount:0,
         _modules:{},
         _download:[],
+        //----------public functions--------
         namespace:function (namespaces) {
             var ns = namespaces.split('.'),
                 current = window[ns[0]];
@@ -18,7 +19,7 @@
                 current = window[ns[0]] = {};
             }
 
-            for (var i = 0; i < ns.length; ++i) {
+            for (var i = 1; i < ns.length; ++i) {
                 current = current[ns[i]] = current[ns[i]] || {};
             }
             return current;

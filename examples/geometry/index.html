@@ -16,16 +16,17 @@
                 name:'main',
                 requires:['Point', 'Size', 'Rectangle'],
                 body:function () {
-                    var p = new Point(10, 10);
-                    alert(p);
+                    Mod.namespace('Mathematics.Geometry');
+                    Mathematics.Geometry.p = new Point(10, 10);
+                    alert(Mathematics.Geometry.p);
                     var size = new Size(100, 100);
-                    alert(size);
+//                    alert(size);
                     var rect = new Rectangle(p, size);
-                    alert(rect);
+//                    alert(rect);
                     p.x = 20;
-                    alert(p);
+//                    alert(p);
                     var p2 = new Point(40, 10);
-                    alert(p.getDistance(p2, false));
+//                    alert(p.getDistance(p2, false));
                 }
             });
 </script>
