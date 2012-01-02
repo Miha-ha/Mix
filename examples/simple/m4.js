@@ -1,4 +1,4 @@
-Mod.module({
+Mix.module({
     name:'m4',
     requires:[],
     body:function () {

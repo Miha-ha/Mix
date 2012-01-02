@@ -6,27 +6,18 @@
 </head>
 <body>
 
-<script src="../../mod.js"></script>
+<script src="../../mix.js"></script>
 <script>
-    Mod.config({
+    Mix.config({
         synchronous:true,
         prefixPath:'',
         nocache:false
     }).module({
                 name:'main',
-                requires:['Point', 'Size', 'Rectangle'],
+                requires:['Mathematics.Geometry.Point'],
                 body:function () {
-                    Mod.namespace('Mathematics.Geometry');
-                    Mathematics.Geometry.p = new Point(10, 10);
-                    alert(Mathematics.Geometry.p);
-                    var size = new Size(100, 100);
-//                    alert(size);
-                    var rect = new Rectangle(p, size);
-//                    alert(rect);
-                    p.x = 20;
-//                    alert(p);
-                    var p2 = new Point(40, 10);
-//                    alert(p.getDistance(p2, false));
+                    var p = new Mathematics.Geometry.Point(10, 10);
+                    alert(p);
                 }
             });
 </script>

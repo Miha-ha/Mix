@@ -1,6 +1,6 @@
 //TODO: добавить namespace
 (function () {
-    Mod = {
+    Mix = {
         //------------config----------
         nocache:false,
         prefixPath:'',
@@ -13,7 +13,7 @@
         //----------public functions--------
         namespace:function (namespaces) {
             var ns = namespaces.split('.'),
-                current = window[ns[0]];
+                current = namespaces.length > 0 ? window[ns[0]] : window;
 
             if (current === undefined) {
                 current = window[ns[0]] = {};
@@ -34,7 +34,7 @@
         apply:function (o, c, defaults) {
             // no "this" reference for friendly out of scope calls
             if (defaults) {
-                Mod.apply(o, defaults);
+                Mix.apply(o, defaults);
             }
             if (o && c && typeof c == 'object') {
                 for (var p in c) {
@@ -47,20 +47,24 @@
             return this.apply(this, config);
         },
         define:function (classPath, config) {
-            //TODO: разабраться с именем класса: ClassName или Full.Path.ClassName
-            var className = this.getClassName(classPath);
+            var path = classPath.split('.');
+            var className = path[path.length - 1];
+            var classNamespace = this.namespace(path.slice(0, path.length - 1).join('.'));
+
             var requires = [];
             if (config.extend != undefined) {
                 requires = [config.extend];
-                var parentClassName = this.getClassName(config.extend);
+                var pathParent = config.extend.split('.');
+                var parentClassName = pathParent[pathParent.length - 1];
+                var parentClassNamespace = this.namespace(pathParent.slice(0, pathParent.length - 1).join('.'));
             }
 
-            Mod.module({
-                name:className,
+            Mix.module({
+                name:classPath,
                 requires:requires,
                 body:function () {
-                    var parent = window[parentClassName] || Mod.Class;
-                    window[className] = parent.create(config);
+                    var parent = parentClassNamespace && parentClassNamespace[parentClassName] || Mix.Class;
+                    classNamespace[className] = parent.create(config);
                 }
             });
         },
@@ -102,7 +106,7 @@
 
             if (modulesLoaded) {
                 this.process();
-            } else if (/*!ig.baked && */this._loadingCount == 0 && this._download.length != 0) {
+            } else if (this._loadingCount == 0 && this._download.length != 0) {
                 var unresolved = [];
                 for (i = 0; i < this._download.length; i++) {
                     unresolved.push(this._download[i].name);
@@ -228,11 +232,11 @@
         xyz;
     }) ? /\b_super\b/ : /.*/;
     // The base Class implementation (does nothing)
-    Mod.Class = function () {
+    Mix.Class = function () {
     };
 
     // Create a new Class that inherits from this class
-    Mod.Class.create = function (prop) {
+    Mix.Class.create = function (prop) {
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,

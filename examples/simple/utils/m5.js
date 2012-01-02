@@ -1,4 +1,4 @@
-Mod.module({
+Mix.module({
     name:'utils.m5',
     requires:[],
     body:function () {

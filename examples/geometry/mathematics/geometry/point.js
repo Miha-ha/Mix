@@ -1,4 +1,4 @@
-Mod.define('Mathematics.Geometry.Point', {
+Mix.define('Mathematics.Geometry.Point', {
     init:function (x, y) {
         this.x = x;
         this.y = y;
