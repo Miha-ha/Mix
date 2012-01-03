@@ -46,14 +46,32 @@
         config:function (config) {
             return this.apply(this, config);
         },
-        define:function (classPath, config) {
+        define:function () {
+            var classPath = '',
+                requires = [],
+                config = {};
+            //разбор аргументов. Если их 3 - classPath, requires, config
+            //если 2 - classPath, config
+            switch (arguments.length) {
+                case 2:
+                    classPath = arguments[0];
+                    config = arguments[1];
+                    break;
+                case 3:
+                    classPath = arguments[0];
+                    requires = arguments[1] || [];
+                    config = arguments[2];
+                    break;
+                default:
+                    throw('Incorrect arguments');
+            }
+
             var path = classPath.split('.');
             var className = path[path.length - 1];
             var classNamespace = this.namespace(path.slice(0, path.length - 1).join('.'));
 
-            var requires = [];
             if (config.extend != undefined) {
-                requires = [config.extend];
+                requires.push(config.extend);
                 var pathParent = config.extend.split('.');
                 var parentClassName = pathParent[pathParent.length - 1];
                 var parentClassNamespace = this.namespace(pathParent.slice(0, pathParent.length - 1).join('.'));
@@ -78,7 +96,6 @@
         },
         process:function () {
             var modulesLoaded = false;
-            //TODO: while
             for (var i = 0; i < this._download.length; ++i) {
                 var m = this._download[i];
                 var requiresLoaded = true;

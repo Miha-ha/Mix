@@ -8,21 +8,14 @@
             color: #ffffff;
             font-family: arial, monospace;
             font-size: 120%;
-        }
-
-        .wrap {
-            /*width: 640px;*/
-            /*margin: 0 auto;*/
+            overflow: hidden;
+            margin: 0;
         }
 
         canvas {
             border: 0px solid #0f0;
-
         }
 
-        a {
-            color: #0f0;
-        }
     </style>
 
     <script type="text/javascript">
@@ -31,10 +24,8 @@
 
 </head>
 <body onresize="resizeCanvas()">
-<div class="wrap">
-    <div id="stats"></div>
-    <canvas id="Canvas2D">No bunnies for you! Come back in... one year!</canvas>
-</div>
+<div id="stats"></div>
+<canvas id="Canvas2D">No bunnies for you! Come back in... one year!</canvas>
 <script src="../../mix.js"></script>
 <script>
 
@@ -45,31 +36,11 @@
         nocache:false
     }).module({
                 name:'main',
-                requires:['bunny', 'stats'],
+                requires:['Circles', 'stats'], //'bunny', 'stats'
                 body:function () {
-                    resizeCanvas = function () {
-                        canvas = document.getElementById("Canvas2D");
-                        if (canvas.width < window.innerWidth) {
-                            canvas.width = window.innerWidth;
-                        }
 
-                        if (canvas.height < window.innerHeight) {
-                            canvas.height = window.innerHeight;
-                        }
-
-                        //TODO: переделать инициализацию при изменении размера браузера
-                        setupBunny(canvas.width, canvas.height);
-                    };
-                    requestAnimFrame = (function () {
-                        return window.requestAnimationFrame ||
-                                window.webkitRequestAnimationFrame ||
-                                window.mozRequestAnimationFrame ||
-                                window.oRequestAnimationFrame ||
-                                window.msRequestAnimationFrame ||
-                                function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-                                    window.setTimeout(callback, 1000 / 60);
-                                };
-                    })();
+                    var circles = new Circles(1000);
+                    circles.run();
 
                     if (typeof Stats == 'function') {
                         //clearInterval(interval);
@@ -84,9 +55,33 @@
 
                     }
 
-                    resizeCanvas();
+                    /*
+                     resizeCanvas = function () {
+                     canvas = document.getElementById("Canvas2D");
+                     canvas.width = window.innerWidth;
+                     canvas.height = window.innerHeight;
 
+                     //TODO: переделать инициализацию при изменении размера браузера
+                     setupBunny(canvas.width, canvas.height);
+                     };
+
+                     if (typeof Stats == 'function') {
+                     //clearInterval(interval);
+                     var stats = new Stats();
+                     stats.domElement.style.position = 'fixed';
+                     stats.domElement.style.left = '0px';
+                     stats.domElement.style.top = '0px';
+                     document.body.appendChild(stats.domElement);
+                     setInterval(function () {
+                     stats.update();
+                     }, 1000 / 60);
+
+                     }
+
+                     resizeCanvas();
+                     */
                 }
+
             });
 </script>
 </body>
