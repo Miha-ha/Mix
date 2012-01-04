@@ -23,7 +23,7 @@
     </script>
 
 </head>
-<body onresize="resizeCanvas()">
+<body>
 <div id="stats"></div>
 <canvas id="Canvas2D">No bunnies for you! Come back in... one year!</canvas>
 <script src="../../mix.js"></script>
@@ -39,7 +39,7 @@
                 requires:['Circles', 'stats'], //'bunny', 'stats'
                 body:function () {
 
-                    var circles = new Circles(1000);
+                    var circles = new Circles(500);
                     circles.run();
 
                     if (typeof Stats == 'function') {
