@@ -39,8 +39,6 @@ Mix.define('Circles', ['Circle'], {
         }
     },
     render:function () {
-        this.update();
-
 //        this.ctx.fillStyle = this.bgcolor;
 //        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -48,10 +46,47 @@ Mix.define('Circles', ['Circle'], {
             this.circles[i].render(this.ctx);
         }
 
-        requestAnimFrame(this.render.bind(this));
     },
+    /*
+     var loops = 0, skipTicks = 1000 / Game.fps,
+     maxFrameSkip = 10,
+     nextGameTick = (new Date).getTime();
+
+     return function() {
+     loops = 0;
+
+     while ((new Date).getTime() > nextGameTick) {
+     updateStats.update();
+     Game.update();
+     nextGameTick += skipTicks;
+     loops++;
+     }
+
+     renderStats.update();
+     Game.draw();
+     };
+     */
     run:function () {
-        this.render();
+        var me = this,
+            loops = 0,
+            skipTicks = 33.3, // =1000/30
+            maxFrameSkip = 10,
+            nextGameTick = (new Date()).getTime();
+
+            var loop = function () {
+                loops = 0;
+
+                while ((new Date).getTime() > nextGameTick) {
+                    me.update();
+                    nextGameTick += skipTicks;
+                    loops++;
+                }
+
+                me.render();
+                requestAnimFrame(loop);
+            };
+
+            loop();
     },
     rnd:function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;

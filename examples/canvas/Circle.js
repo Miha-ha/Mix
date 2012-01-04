@@ -53,10 +53,11 @@ Mix.define('Circle', {
             this.dy *= -1;
         }
     },
-    render:function (ctx) {
-        var x = (this.x - this.r + 0.5) | 0,
-            y = (this.y - this.r + 0.5) | 0,
-            r = this.r;
+    render:function () {
+        var x = (this.x  + 0.5) | 0,
+            y = (this.y  + 0.5) | 0,
+            r = this.r,
+            ctx = this.main.ctx;
 
         //TODO:победить прозрачность при буферизации!
         //ctx.putImageData(this.imgData, x, y);
