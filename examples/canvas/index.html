@@ -6,14 +6,8 @@
         body {
             background: #000000;
             color: #ffffff;
-            font-family: arial, monospace;
-            font-size: 120%;
             overflow: hidden;
             margin: 0;
-        }
-
-        canvas {
-            border: 0px solid #0f0;
         }
 
     </style>
@@ -29,17 +23,16 @@
 <script src="../../mix.js"></script>
 <script>
 
-
     Mix.config({
         synchronous:true,
         prefixPath:'',
         nocache:false
     }).module({
                 name:'main',
-                requires:['Circles', 'stats'], //'bunny', 'stats'
+                requires:['Circles', 'stats'],
                 body:function () {
 
-                    var circles = new Circles(500);
+                    var circles = new Circles(1000);
                     circles.run();
 
                     if (typeof Stats == 'function') {
@@ -55,31 +48,6 @@
 
                     }
 
-                    /*
-                     resizeCanvas = function () {
-                     canvas = document.getElementById("Canvas2D");
-                     canvas.width = window.innerWidth;
-                     canvas.height = window.innerHeight;
-
-                     //TODO: переделать инициализацию при изменении размера браузера
-                     setupBunny(canvas.width, canvas.height);
-                     };
-
-                     if (typeof Stats == 'function') {
-                     //clearInterval(interval);
-                     var stats = new Stats();
-                     stats.domElement.style.position = 'fixed';
-                     stats.domElement.style.left = '0px';
-                     stats.domElement.style.top = '0px';
-                     document.body.appendChild(stats.domElement);
-                     setInterval(function () {
-                     stats.update();
-                     }, 1000 / 60);
-
-                     }
-
-                     resizeCanvas();
-                     */
                 }
 
             });

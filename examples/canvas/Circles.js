@@ -5,11 +5,7 @@ Mix.define('Circles', ['Circle'], {
         this.canvas = document.getElementById('Canvas2D');
         this.ctx = this.canvas.getContext('2d');
 
-        this.img = new Image();
-        this.img.src = 'wabbit_alpha.png';
-
-
-//        this.ctx.globalCompositeOperation = 'destination-over';
+//        this.ctx.globalCompositeOperation = "destination-out";
         this.resize();
 
         while (count > 0) {
@@ -39,15 +35,13 @@ Mix.define('Circles', ['Circle'], {
     },
     update:function () {
         for (var i = 0; i < this.circles.length; ++i) {
-            this.circles[i].update(this.canvas.width, this.canvas.height);
+            this.circles[i].update();
         }
     },
     render:function () {
         this.update();
 
-        this.ctx.fillStyle = this.bgcolor;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-//        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (var i = 0; i < this.circles.length; ++i) {
             this.circles[i].render(this.ctx);
         }
