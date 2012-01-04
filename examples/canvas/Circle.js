@@ -8,14 +8,17 @@ Mix.define('Circle', {
         this.r = r || 10;
 
         this.maxSpeed = 5;
-        this.dx = this.rnd(-this.maxSpeed-1, this.maxSpeed)+1;
-        this.dy = this.rnd(-this.maxSpeed-1, this.maxSpeed)+1;
+        var sign = 1;
+        if(Math.random()>0.5) sign = -1;
+        this.dx = Math.random()*this.maxSpeed*sign;
+        if(Math.random()>0.5) sign = -1;
+        this.dy = Math.random()*this.maxSpeed*sign;
 
-        this.color = 'rgb(' + this.rnd(0, 255) + ',' + this.rnd(0, 255) + ',' + this.rnd(0, 255) + ')';
+        this.color = 'rgba(' + main.rnd(0, 255) + ',' + main.rnd(0, 255) + ',' + main.rnd(0, 255) + ', 255)';
 
         //буферизация
-        //TODO:победить прозрачность!
-        var r2 = this.r*2;
+        /*
+        var r2 = this.r * 2;
 
         ctx.clearRect(0, 0, r2, r2);
         ctx.fillStyle = this.color;
@@ -24,7 +27,8 @@ Mix.define('Circle', {
         ctx.closePath();
         ctx.fill();
 
-        this.imgData = ctx.getImageData(0, 0, r * 2, r * 2);
+        this.imgData = ctx.getImageData(0, 0, r2, r2);
+        */
     },
     update:function () {
         var width = this.main.canvas.width,
@@ -35,25 +39,33 @@ Mix.define('Circle', {
 
         if (this.x <= this.r) {
             this.x = this.r;
-            this.dx = this.rnd(-this.maxSpeed - 1, this.maxSpeed) + 1;
+            this.dx *= -1;
         } else if (this.x >= width - this.r) {
             this.x = width - this.r;
-            this.dx = this.rnd(-this.maxSpeed - 1, this.maxSpeed) + 1;
+            this.dx *= -1;
         }
 
         if (this.y <= this.r) {
             this.y = this.r;
-            this.dy = this.rnd(-this.maxSpeed - 1, this.maxSpeed) + 1;
+            this.dy *= -1;
         } else if (this.y >= height - this.r) {
             this.y = height - this.r;
-            this.dy = this.rnd(-this.maxSpeed - 1, this.maxSpeed) + 1;
+            this.dy *= -1;
         }
     },
     render:function (ctx) {
-        ctx.putImageData(this.imgData, (this.x-this.r + 0.5) | 0, (this.y-this.r + 0.5) | 0);
-    },
-    rnd:function (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        var x = (this.x - this.r + 0.5) | 0,
+            y = (this.y - this.r + 0.5) | 0,
+            r = this.r;
+
+        //TODO:победить прозрачность при буферизации!
+        //ctx.putImageData(this.imgData, x, y);
+
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
     }
 
 });
