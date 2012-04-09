@@ -1,34 +1,36 @@
 Mix.define('Game', ['Planet', 'Player'], {
-    entities: [],
-    players: [],
+    entities:[],
+    players:[],
     init:function (count) {
+        //типы сущностей
+        this.planetsTypes = [
+            {color:'#FF0000'}
+        ];
+
+        //инициализирую игроков
+        this.human = new Player('HUMAN', this);
         //создаю планеты
         var p1 = new Planet(100, 100, this);
+        p1.setOwner(this.human);
 
-//        p1.select(true);
         this.entities.push(p1);
         this.entities.push(new Planet(300, 200, this));
         this.entities.push(new Planet(600, 400, this));
         this.entities.push(new Planet(500, 600, this));
         this.entities.push(new Planet(700, 500, this));
 
-
-        //инициализирую игроков
-        this.human = new Player('HUMAN');
-        //this.human.selectPlanet(p1);
-
         this.initGraphics();
         this.initEvents();
     },
-    initEvents: function(){
+    initEvents:function () {
         this.canvas.addEventListener("click", this.onMouseClick.bind(this), false);
     },
-    initGraphics: function(){
-        this.bgcolor = '#00FFFF';
+    initGraphics:function () {
+        this.bgcolor = '#000000';
         this.canvas = document.getElementById('Canvas2D');
         this.ctx = this.canvas.getContext('2d');
         this.resize();
-        this.ctx.globalAlpha = 0.5;
+        this.ctx.globalAlpha = 1;
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         requestAnimFrame = (function () {
@@ -66,24 +68,27 @@ Mix.define('Game', ['Planet', 'Player'], {
         };
         loop();
     },
-    onMouseClick: function(e){
+    onMouseClick:function (e) {
         var i, l;
-        console.log(e);
+
         var select = false;
         for (i = 0, l = this.entities.length; i < l; ++i) {
             var cur = this.entities[i];
-            var dist = Math.sqrt((e.x - cur.x)*(e.x - cur.x)+(e.y - cur.y)*(e.y - cur.y));
-            if(dist<=cur.r){
-                this.human.selectPlanet(cur);
+            var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
+            if (dist <= cur.r) {
+                this.human.selectPlanet(cur, true);
                 select = true;
             }
         }
 
-        if(!select){
+        if (!select) {
             for (i = 0, l = this.human.selected.length; i < l; ++i) {
                 this.human.selected[i].select(false);
             }
         }
 
+    },
+    rnd:function (min, max) {
+        return ((Math.random() * (max - min + 1) + 0.5) | 0) + min;
     }
 });

@@ -98,6 +98,7 @@
             var modulesLoaded = false;
             for (var i = 0; i < this._download.length; ++i) {
                 var m = this._download[i];
+                m.requires = m.requires || [];
                 var requiresLoaded = true;
                 for (var r = 0; r < m.requires.length; ++r) {
                     var req = m.requires[r];

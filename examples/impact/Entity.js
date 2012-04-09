@@ -1,15 +1,15 @@
 Mix.define('Entity', {
-    isSelect: false,
+    isSelect:false,
     init:function (x, y, game) {
         this.x = x;
         this.y = y;
-        this.main = game;
+        this.game = game;
     },
     update:function () {
     },
     render:function () {
     },
-    select: function(flag){
+    select:function (flag) {
         this.isSelect = flag;
     }
 
