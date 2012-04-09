@@ -69,8 +69,7 @@ Mix.define('Circles', ['Circle'], {
     run:function () {
         var me = this,
             loops = 0,
-            skipTicks = 33.3, // =1000/30
-            maxFrameSkip = 10,
+            skipTicks = 33, // ~1000/30
             nextGameTick = (new Date()).getTime();
 
             var loop = function () {
