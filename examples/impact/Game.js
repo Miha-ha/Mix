@@ -1,6 +1,7 @@
 Mix.define('Game', ['Planet', 'Player'], {
     entities:[],
     players:[],
+    fordelete:[],
     init:function (count) {
         //типы сущностей
         this.planetsTypes = [
@@ -53,11 +54,17 @@ Mix.define('Game', ['Planet', 'Player'], {
         this.canvasHeight = this.canvas.height;
     },
     render:function () {
+        var i, l;
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        for (var i = 0, l = this.entities.length; i < l; ++i) {
+        for (i = 0, l = this.entities.length; i < l; ++i) {
             this.entities[i].update();
             this.entities[i].render();
         }
+
+        for (i = 0, l = this.fordelete.length; i < l; ++i) {
+            this.entities.splice(this.fordelete[i], 1);
+        }
+        this.fordelete = [];
     },
     run:function () {
         var me = this;

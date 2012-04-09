@@ -19,7 +19,7 @@ Mix.define('Player', ['Unit'], {
                 this.selected.push(planet);
             else {
                 var ind = this.selected.indexOf(planet);
-                this.selected.splice(ind, 1);
+                this.selected.splice(ind, 1);//TODO: избавиться от splice
             }
         }
         console.log(this.selected.length);
@@ -37,10 +37,12 @@ Mix.define('Player', ['Unit'], {
                 cur.countUnits -= units;
                 this.game.entities.push(new Unit(cur, planet, units, this.game));
             }
-            this.selectPlanet(cur, false);
-
         }
-        console.log('attack');
+
+        //снимаю выделение
+        for (i = 0; i < l; ++i) {
+            this.selectPlanet(this.selected[i], false);
+        }
     }
 
 });
