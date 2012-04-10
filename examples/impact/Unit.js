@@ -41,26 +41,29 @@ Mix.define('Unit', {
         this.isKilled =true;
     },
     war:function () {
-        console.log('Нападение на противника');
-        var goodluck = this.game.rnd(-10, 10); //Коэффициент удачи
+        var goodluck = this.game.rnd(-30, 30); //Коэффициент удачи
         console.log('Удача ' + goodluck);
 
-        this.count+=goodluck;
+        this.count+=Math.floor(this.count/100*goodluck);
         if(this.count<0) this.count=0;
+
+        console.log('Нападение на противника - нап.:'+this.count+', оборон.:'+this.to.countUnits);
 
         var diff = this.to.countUnits - this.count;
 
         if (diff > 0) {
             this.to.countUnits -= diff;
+            console.log('Поражение :(');
         } else {
             this.to.countUnits = Math.abs(diff);
             this.to.setOwner(this.from.owner);
+            console.log('Победа!');
         }
+
     },
     support:function () {
         console.log('Подкрепление');
         this.to.countUnits += this.count;
-        this.kill();
     },
     render:function () {
         var x = (this.x + 0.5) | 0,

@@ -12,10 +12,13 @@ Mix.define('Game', ['Planet', 'Player'], {
         this.human = new Player('HUMAN', this);
         //создаю планеты
         var p1 = new Planet(100, 100, this);
+        var p2 = new Planet(300, 200, this);
         p1.setOwner(this.human);
+        p2.setOwner(this.human);
 
         this.entities.push(p1);
-        this.entities.push(new Planet(300, 200, this));
+        this.entities.push(p2);
+        this.entities.push(new Planet(900, 100, this));
         this.entities.push(new Planet(600, 400, this));
         this.entities.push(new Planet(500, 600, this));
         this.entities.push(new Planet(700, 500, this));
@@ -26,6 +29,7 @@ Mix.define('Game', ['Planet', 'Player'], {
     },
     initEvents:function () {
         this.canvas.addEventListener("click", this.onMouseClick.bind(this), false);
+        this.canvas.addEventListener('dblclick', this.onMouseDbClick.bind(this), false);
     },
     initGraphics:function () {
         this.bgcolor = '#000000';
@@ -86,12 +90,26 @@ Mix.define('Game', ['Planet', 'Player'], {
             if (dist <= cur.r) {
                 this.human.selectPlanet(cur, true);
                 select = true;
+                break;
             }
         }
 
         if (!select) {
             for (i = 0, l = this.human.selected.length; i < l; ++i) {
                 this.human.selected[i].select(false);
+            }
+        }
+
+    },
+    onMouseDbClick: function(e){
+        var i, l;
+
+        for (i = 0, l = this.entities.length; i < l; ++i) {
+            var cur = this.entities[i];
+            var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
+            if (dist <= cur.r) {
+                this.human.sendTo(cur);
+                break;
             }
         }
 
