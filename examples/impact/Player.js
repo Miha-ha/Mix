@@ -8,7 +8,9 @@ Mix.define('Player', ['Unit'], {
             this.color = '#FF0000';
         }
     },
-    sendTo: function(planet){
+    sendTo:function (planet) {
+
+
         var i,
             l = this.selected.length;
         if (l == 0) return;
@@ -43,9 +45,9 @@ Mix.define('Player', ['Unit'], {
 //                this.selected.splice(ind, 1);//TODO: избавиться от splice
             }
         }
-        console.log(this.selected.length);
     },
     attack:function (planet) {
+//        document.getElementById('audioAttack').play();
         var i,
             l = this.selected.length;
         if (l == 0) return;

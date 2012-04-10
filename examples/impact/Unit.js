@@ -2,7 +2,7 @@ Mix.define('Unit', {
     extend:'Entity',
     count:30,
     speed:0.7,
-    isKilled: false,
+    isKilled:false,
     init:function (from, to, count, game) {
         this._super(from.x, from.y, game);
         this.color = from.color;
@@ -18,7 +18,7 @@ Mix.define('Unit', {
         this.speedY = Math.abs(this.speed * tvy / l);
     },
     update:function () {
-        if(this.isKilled) return;
+        if (this.isKilled) return;
         if (this.x < this.to.x) this.x += this.speedX;
         if (this.x > this.to.x) this.x -= this.speedX;
         if (this.y < this.to.y) this.y += this.speedY;
@@ -38,22 +38,22 @@ Mix.define('Unit', {
     kill:function () {
         var ind = this.game.entities.indexOf(this);
         this.game.fordelete.push(ind);
-        this.isKilled =true;
+        this.isKilled = true;
     },
     war:function () {
         var goodluck = this.game.rnd(-30, 30); //Коэффициент удачи
         console.log('Удача ' + goodluck);
 
-        this.count+=Math.floor(this.count/100*goodluck);
-        if(this.count<0) this.count=0;
+        this.count += Math.floor(this.count / 100 * goodluck);
+        if (this.count < 0) this.count = 0;
 
-        console.log('Нападение на противника - нап.:'+this.count+', оборон.:'+this.to.countUnits);
+        console.log('Нападение на противника - нап.:' + this.count + ', оборон.:' + this.to.countUnits);
 
         var diff = this.to.countUnits - this.count;
 
         if (diff > 0) {
-            this.to.countUnits -= diff;
-            console.log('Поражение :(');
+            this.to.countUnits = diff;
+            console.log('Поражение :( юнитов осталось ' + this.to.countUnits);
         } else {
             this.to.countUnits = Math.abs(diff);
             this.to.setOwner(this.from.owner);
