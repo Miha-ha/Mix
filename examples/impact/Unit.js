@@ -2,6 +2,7 @@ Mix.define('Unit', {
     extend:'Entity',
     count:0,
     speed:0.7,
+    isKilled: false,
     init:function (from, to, count, game) {
         this._super(from.x, from.y, game);
         this.color = from.color;
@@ -17,6 +18,7 @@ Mix.define('Unit', {
         this.speedY = Math.abs(this.speed * tvy / l);
     },
     update:function () {
+        if(this.isKilled) return;
         if (this.x < this.to.x) this.x += this.speedX;
         if (this.x > this.to.x) this.x -= this.speedX;
         if (this.y < this.to.y) this.y += this.speedY;
@@ -30,16 +32,21 @@ Mix.define('Unit', {
             } else {
                 this.war();
             }
+            this.kill();
         }
     },
     kill:function () {
         var ind = this.game.entities.indexOf(this);
         this.game.fordelete.push(ind);
+        this.isKilled =true;
     },
     war:function () {
         console.log('Нападение на противника');
         var goodluck = this.game.rnd(-10, 10); //Коэффициент удачи
         console.log('Удача ' + goodluck);
+
+        this.count+=goodluck;
+        if(this.count<0) this.count=0;
 
         var diff = this.to.countUnits - this.count;
 
@@ -49,7 +56,6 @@ Mix.define('Unit', {
             this.to.countUnits = Math.abs(diff);
             this.to.setOwner(this.from.owner);
         }
-        this.kill();
     },
     support:function () {
         console.log('Подкрепление');

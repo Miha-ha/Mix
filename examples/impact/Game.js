@@ -97,6 +97,6 @@ Mix.define('Game', ['Planet', 'Player'], {
 
     },
     rnd:function (min, max) {
-        return ((Math.random() * (max - min + 1) + 0.5) | 0) + min;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 });
