@@ -1,6 +1,6 @@
 Mix.define('Unit', {
     extend:'Entity',
-    count:0,
+    count:30,
     speed:0.7,
     isKilled: false,
     init:function (from, to, count, game) {
