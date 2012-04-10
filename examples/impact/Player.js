@@ -19,7 +19,7 @@ Mix.define('Player', ['Unit'], {
                 this.selected.push(planet);
             else {
                 var ind = this.selected.indexOf(planet);
-                this.selected.splice(ind, 1);//TODO: избавиться от splice
+//                this.selected.splice(ind, 1);//TODO: избавиться от splice
             }
         }
         console.log(this.selected.length);
@@ -43,6 +43,7 @@ Mix.define('Player', ['Unit'], {
         for (i = 0; i < l; ++i) {
             this.selectPlanet(this.selected[i], false);
         }
+        this.selected = [];
     }
 
 });

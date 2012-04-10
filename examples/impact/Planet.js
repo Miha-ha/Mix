@@ -48,7 +48,7 @@ Mix.define('Planet', {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.countUnits, x, y);
-        ctx.stroke();
+//        ctx.stroke();
     }
 
 });
