@@ -18,6 +18,8 @@ Mix.define('Planet', {
     produce:function () {
         if (this.countUnits < this.maxUnits)
             this.countUnits++;
+        else if(this.countUnits > this.maxUnits)
+            this.countUnits--;
     },
     update:function () {
     },
