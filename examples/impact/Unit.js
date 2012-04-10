@@ -22,24 +22,39 @@ Mix.define('Unit', {
         if (this.y < this.to.y) this.y += this.speedY;
         if (this.y > this.to.y) this.y -= this.speedY;
 
+        //если юниты долетели, то начинаем бой
         if (this.getDistance(this.to, true) < this.to.r * this.to.r) {
-            var diff = this.to.countUnits - this.from.countUnits;
-            if (diff > 0) {
-                this.to.countUnits -= diff;
+            //Проверяем, если планеты принадлежат одному вождю, то высылаем подкреп, иначе война
+            if (this.to.owner == this.from.owner) {
+                this.support();
             } else {
-                if (this.to.owner != this.from.owner)
-                    this.to.countUnits = Math.abs(diff);
-                else
-                    this.to.countUnits = this.from.countUnits;
-                this.to.setOwner(this.from.owner);
+                this.war();
             }
-            this.kill();
         }
-
     },
     kill:function () {
         var ind = this.game.entities.indexOf(this);
         this.game.fordelete.push(ind);
+    },
+    war:function () {
+        console.log('Нападение на противника');
+        var goodluck = this.game.rnd(-10, 10); //Коэффициент удачи
+        console.log('Удача ' + goodluck);
+
+        var diff = this.to.countUnits - this.count;
+
+        if (diff > 0) {
+            this.to.countUnits -= diff;
+        } else {
+            this.to.countUnits = Math.abs(diff);
+            this.to.setOwner(this.from.owner);
+        }
+        this.kill();
+    },
+    support:function () {
+        console.log('Подкрепление');
+        this.to.countUnits += this.count;
+        this.kill();
     },
     render:function () {
         var x = (this.x + 0.5) | 0,

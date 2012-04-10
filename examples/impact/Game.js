@@ -19,6 +19,7 @@ Mix.define('Game', ['Planet', 'Player'], {
         this.entities.push(new Planet(600, 400, this));
         this.entities.push(new Planet(500, 600, this));
         this.entities.push(new Planet(700, 500, this));
+        this.entities.push(new Planet(1000, 200, this));
 
         this.initGraphics();
         this.initEvents();
