@@ -19,9 +19,9 @@ Mix.define('Player', ['Unit'], {
                 units = Math.floor(cur.countUnits / 2 + 0.5);
 
             if (cur.countUnits - units >= 0 && units > 0) {
-                cur.countUnits -= units;
                 if (cur != planet) {
                     sendersCount++;
+                    cur.countUnits -= units;
                     this.game.entities.push(new Unit(cur, planet, units, this.game));
                 }
             }
