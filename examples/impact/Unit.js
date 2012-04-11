@@ -2,7 +2,6 @@ Mix.define('Unit', {
     extend:'Entity',
     count:30,
     speed:0.7,
-    isKilled:false,
     init:function (from, to, count, game) {
         this._super(from.x, from.y, game);
         this.color = from.color;
@@ -34,11 +33,6 @@ Mix.define('Unit', {
             }
             this.kill();
         }
-    },
-    kill:function () {
-        var ind = this.game.entities.indexOf(this);
-        this.game.fordelete.push(ind);
-        this.isKilled = true;
     },
     war:function () {
         var goodluck = this.game.rnd(-30, 30); //Коэффициент удачи

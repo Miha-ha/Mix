@@ -61,14 +61,20 @@ Mix.define('Game', ['Planet', 'Player'], {
     render:function () {
         var i, l;
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        for (i = 0, l = this.entities.length; i < l; ++i) {
-            this.entities[i].update();
-            this.entities[i].render();
+        for (i = this.entities.length - 1; i > -1; --i) {
+            var cur = this.entities[i];
+            cur.render();
+            cur.update();
+            if (cur.isKilled) {
+                this.entities.splice(i, 1);
+                console.log('Entity c ind=' + i + ' удален!');
+            }
         }
 
-        for (i = 0, l = this.fordelete.length; i < l; ++i) {
-            this.entities.splice(this.fordelete[i], 1);
-        }
+//        for (i = 0, l = this.fordelete.length; i < l; ++i) {
+//            this.entities.splice(this.fordelete[i], 1);
+//        }
+
         this.fordelete = [];
     },
     run:function () {
@@ -101,7 +107,7 @@ Mix.define('Game', ['Planet', 'Player'], {
         }
 
     },
-    onMouseDbClick: function(e){
+    onMouseDbClick:function (e) {
         var i, l;
 
         for (i = 0, l = this.entities.length; i < l; ++i) {
