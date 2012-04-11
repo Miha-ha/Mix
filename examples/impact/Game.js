@@ -101,9 +101,10 @@ Mix.define('Game', ['Planet', 'Player'], {
         }
 
         if (!select) {
-            for (i = 0, l = this.human.selected.length; i < l; ++i) {
-                this.human.selected[i].select(false);
-            }
+//            for (i = this.human.selected.length - 1; i > -1; i--) {
+//                this.human.selectPlanet(this.human.selected[i], false);
+//            }
+            this.human.unselectPlanets();
         }
 
     },
