@@ -6,7 +6,7 @@ Mix.define('Unit', {
     init:function (from, to, count, game) {
         this._super(from.x, from.y, game);
         this.color = from.color;
-        this.from = from;
+        this.owner = from.owner;
         this.to = to;
         this.count = count;
 
@@ -27,7 +27,7 @@ Mix.define('Unit', {
         //если юниты долетели, то начинаем бой
         if (this.getDistance(this.to, true) < this.to.r * this.to.r) {
             //Проверяем, если планеты принадлежат одному вождю, то высылаем подкреп, иначе война
-            if (this.to.owner == this.from.owner) {
+            if (this.to.owner == this.owner) {
                 this.support();
             } else {
                 this.war();
@@ -56,13 +56,13 @@ Mix.define('Unit', {
             console.log('Поражение :( юнитов осталось ' + this.to.countUnits);
         } else {
             this.to.countUnits = Math.abs(diff);
-            this.to.setOwner(this.from.owner);
+            this.to.setOwner(this.owner);
             console.log('Победа!');
         }
 
     },
     support:function () {
-        console.log('Подкрепление');
+        console.log('Подкрепление - было: ' + this.to.countUnits + ', прибыло: ' + this.count);
         this.to.countUnits += this.count;
     },
     render:function () {
