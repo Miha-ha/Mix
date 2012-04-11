@@ -46,7 +46,7 @@ Mix.define('Player', ['Unit'], {
         }
     },
     attack:function (planet) {
-//        document.getElementById('audioAttack').play();
+        document.getElementById('audioAttack').play();
         var i,
             l = this.selected.length;
         if (l == 0) return;
