@@ -3,7 +3,7 @@ Mix.define('Player', ['Unit'], {
     init:function (type, game) {
         this.type = type; //HUMAN or COMP
         this.game = game;
-        this.color = '#FFFFFF'; //TODO: добавить случайный выбор из стаблицы цветов
+        this.color = 'rgb(' + game.rnd(0, 255) + ',' + game.rnd(0, 255) + ',' + game.rnd(0, 255) + ')';
         if (this.type == 'HUMAN') {
             this.color = '#FF0000';
         }
@@ -46,7 +46,7 @@ Mix.define('Player', ['Unit'], {
         }
     },
     attack:function (planet) {
-        document.getElementById('audioAttack').play();
+        //document.getElementById('audioAttack').play();
         var i,
             l = this.selected.length;
         if (l == 0) return;

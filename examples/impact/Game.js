@@ -1,6 +1,6 @@
 Mix.define('Game', ['Planet', 'Player'], {
     entities:[],
-    players:[],
+    comps:[],
     fordelete:[],
     init:function (count) {
         //типы сущностей
@@ -8,24 +8,45 @@ Mix.define('Game', ['Planet', 'Player'], {
             {color:'#FF0000'}
         ];
 
-        //инициализирую игроков
-        this.human = new Player('HUMAN', this);
-        //создаю планеты
-        var p1 = new Planet(100, 100, this);
-        var p2 = new Planet(300, 200, this);
-        p1.setOwner(this.human);
-        p2.setOwner(this.human);
-
-        this.entities.push(p1);
-        this.entities.push(p2);
-        this.entities.push(new Planet(900, 100, this));
-        this.entities.push(new Planet(600, 400, this));
-        this.entities.push(new Planet(500, 600, this));
-        this.entities.push(new Planet(700, 500, this));
-        this.entities.push(new Planet(1000, 200, this));
-
         this.initGraphics();
+        this.genLevel();
         this.initEvents();
+    },
+    genLevel:function () {
+        //создаю игроков
+        this.human = new Player('HUMAN', this);
+        this.comps.push(new Player('COMP', this));
+        this.comps.push(new Player('COMP', this));
+        //создаю планеты и распределяю планеты
+        this.countPlanets = this.rnd(10, 20);
+        for (var i = this.countPlanets; i > -1; --i) {
+            var x, y;
+            for (var j = 0; j < 10; ++j) {
+                x = this.rnd(50, this.canvasWidth - 50);
+                y = this.rnd(50, this.canvasHeight - 50);
+                //проверка: не пересекается ли планета с другими
+                var ok = true;
+                for (var p = 0, l = this.entities.length; p < l; ++p) {
+                    var dx = this.entities[p].x - x,
+                        dy = this.entities[p].y - y,
+                        g = Math.sqrt(dx * dx + dy * dy);
+                    if (g < 100) {
+                        ok = false;
+                        break;
+                    }
+
+                }
+                if (ok) break;
+            }
+
+            this.entities.push(new Planet(x, y, this));
+        }
+
+        //распределяю планеты по игрокам
+        this.entities[0].setOwner(this.human);
+        this.entities[1].setOwner(this.comps[0]);
+        this.entities[2].setOwner(this.comps[1]);
+
     },
     initEvents:function () {
         this.canvas.addEventListener("click", this.onMouseClick.bind(this), false);
