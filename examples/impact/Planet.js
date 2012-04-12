@@ -8,15 +8,16 @@ Mix.define('Planet', {
         this._super(x, y, game);
         this.color = '#AA9933';
         this.r = 20;
-        this.maxUnits = game.rnd(20, 50);
-        this.countUnits = game.rnd(1, this.maxUnits / 2);
-        this.productivity = game.rnd(1, 5);
+        this.maxUnits = game.rnd(10, 50);
+        this.countUnits = game.rnd(1, this.maxUnits / 10);
+        this.productivity = game.rnd(1, 3);
         console.log('countUnits: ' + this.countUnits + ', productivity: ' + this.productivity);
         setInterval(this.produce.bind(this), this.productivity * 1000);
     },
     setOwner:function (player) {
         this.owner = player;
         this.color = player.color;
+        this.select(false);
     },
     produce:function () {
         if (this.countUnits < this.maxUnits)

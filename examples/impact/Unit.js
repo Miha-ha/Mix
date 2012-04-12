@@ -77,12 +77,7 @@ Mix.define('Unit', {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.count, x, y);
-    },
-    getDistance:function (planet, squared) {
-        var x = planet.x - this.x,
-            y = planet.y - this.y,
-            g = x * x + y * y;
-        return squared ? g : Math.sqrt(g);
     }
+
 
 });

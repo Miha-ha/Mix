@@ -18,6 +18,12 @@ Mix.define('Entity', {
 //        this.game.fordelete.push(ind);
         this.isKilled = true;
         console.log('Entity c ind=' + ind + ' будет удален!');
+    },
+    getDistance:function (entity, squared) {
+        var x = entity.x - this.x,
+            y = entity.y - this.y,
+            g = x * x + y * y;
+        return squared ? g : Math.sqrt(g);
     }
 
 });

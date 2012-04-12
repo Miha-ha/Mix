@@ -1,6 +1,7 @@
-Mix.define('Game', ['Planet', 'Player'], {
+Mix.define('Game', ['Planet', 'Player', 'AI'], {
     entities:[],
     comps:[],
+    planets:[],
     fordelete:[],
     init:function (count) {
         //типы сущностей
@@ -11,6 +12,8 @@ Mix.define('Game', ['Planet', 'Player'], {
         this.initGraphics();
         this.genLevel();
         this.initEvents();
+
+        this.ai = new AI(this);
     },
     genLevel:function () {
         //создаю игроков
@@ -38,14 +41,21 @@ Mix.define('Game', ['Planet', 'Player'], {
                 }
                 if (ok) break;
             }
-
-            this.entities.push(new Planet(x, y, this));
+            var planet = new Planet(x, y, this);
+            this.entities.push(planet);
+            this.planets.push(planet);
         }
 
         //распределяю планеты по игрокам
         this.entities[0].setOwner(this.human);
+        this.entities[0].maxUnits = 50;
+        this.entities[0].countUnits = 40;
         this.entities[1].setOwner(this.comps[0]);
+        this.entities[1].maxUnits = 50;
+        this.entities[1].countUnits = 40;
         this.entities[2].setOwner(this.comps[1]);
+        this.entities[2].maxUnits = 50;
+        this.entities[2].countUnits = 40;
 
     },
     initEvents:function () {
