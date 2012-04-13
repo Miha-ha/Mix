@@ -35,8 +35,34 @@
                 name:'main',
                 requires:['Game', 'stats'],
                 body:function () {
-
                     var game = new Game();
+                    //тестирование скорости удаления
+                    /*
+                     var count = 10000,
+                     start = Date.now(),
+                     i = 0,
+                     t1 = [],
+                     t2 = {};
+
+                     for(i=0; i<count; ++i){
+                     t1.push(new Planet(10, 10, game));
+                     }
+
+                     for(i=t1.length; i>-1; --i)
+                     t1.splice(i, 1);
+
+                     console.log('time: '+(Date.now()-start)+', length: '+t1.length);
+                     start = Date.now();
+                     for(i=0; i<count; ++i){
+                     t2[i] = new Planet(10, 10, game);
+                     }
+
+                     for(i in t2){
+                     delete t2[i];
+                     }
+                     console.log('time: '+(Date.now()-start)+', length: '+t2.length);
+                     */
+
                     game.run();
 
                     if (typeof Stats == 'function') {

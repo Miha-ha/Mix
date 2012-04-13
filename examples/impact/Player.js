@@ -31,7 +31,7 @@ Mix.define('Player', ['Unit'], {
             this.unselectPlanets();
     },
     selectPlanet:function (planet, flag) {
-        //if (planet.isSelect == flag) return;
+        if (!planet) return;
 
         if (planet.owner == this) {
             if (planet.owner.type == 'HUMAN')
@@ -61,7 +61,7 @@ Mix.define('Player', ['Unit'], {
         for (var i = 0, l = this.selected.length; i < l; ++i) {
             count += this.selected[i].countUnits;
         }
-        return count / 2;
+        return Math.floor(count / 2);
     }
 
 

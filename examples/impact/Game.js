@@ -21,7 +21,7 @@ Mix.define('Game', ['Planet', 'Player', 'AI'], {
         this.comps.push(new Player('COMP', this));
         this.comps.push(new Player('COMP', this));
         //создаю планеты и распределяю планеты
-        this.countPlanets = this.rnd(10, 20);
+        this.countPlanets = this.rnd(15, 30);
         for (var i = this.countPlanets; i > -1; --i) {
             var x, y;
             for (var j = 0; j < 10; ++j) {

@@ -45,7 +45,7 @@ Mix.define('Unit', {
 
         var diff = this.to.countUnits - this.count;
 
-        if (diff > 0) {
+        if (diff >= 0) {
             this.to.countUnits = diff;
             console.log('Поражение :( юнитов осталось ' + this.to.countUnits);
         } else {
