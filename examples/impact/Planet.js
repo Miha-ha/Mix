@@ -20,7 +20,7 @@ Mix.define('Planet', {
         this.select(false);
     },
     produce:function () {
-        if (!this.owner) return;
+//        if (!this.owner) return;
         if (this.countUnits < this.maxUnits)
             this.countUnits++;
         else if (this.countUnits > this.maxUnits)

@@ -69,7 +69,7 @@ Mix.define('AI', {
     process:function () {
         for (var i = 0, l = this.game.comps.length; i < l; ++i) {
             var comp = this.game.comps[i];
-            if (Math.random() > 0.2) continue;//смелость при атаке
+            if (Math.random() > 0.9) continue;//смелость при атаке
             if (this.selectForwards(comp)) {
                 var targetPlanet = this.getTarget(comp);
                 if (targetPlanet) {
