@@ -24,6 +24,10 @@ Mix.define('Entity', {
             y = entity.y - this.y,
             g = x * x + y * y;
         return squared ? g : Math.sqrt(g);
-    }
+    },
+    getBounds: function(){},
+    onMouseMove: function(e){},
+    onMouseClick: function(e){},
+    onMouseDbClick: function(e){}
 
 });

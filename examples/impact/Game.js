@@ -125,6 +125,7 @@ Mix.define('Game', ['Planet', 'Player', 'AI'], {
             var cur = this.entities[i];
             var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
             if (dist <= cur.r) {
+                cur.onMouseClick(e);
                 this.human.selectPlanet(cur, true);
                 select = true;
                 break;

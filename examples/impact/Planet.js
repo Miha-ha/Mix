@@ -4,6 +4,7 @@ Mix.define('Planet', {
     countUnits:0, //текущее количество юнитов на планете
     maxUnits:50, //максимальное кол-во юнитов
     owner:null, //владелец планеты - объект класса Player
+    level: 1,
     init:function (x, y, game) {
         this._super(x, y, game);
         this.color = '#AA9933';
@@ -28,6 +29,22 @@ Mix.define('Planet', {
     },
     update:function () {
     },
+    drawLevel: function(ctx){
+//        ctx.strokeStyle = '#FFFFFF';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.level, this.x-this.r, this.y-this.r);
+    },
+    drawUpgrade: function(ctx){
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = this.color;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x+this.r, this.y-this.r, 5, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+    },
     render:function () {
         var x = (this.x + 0.5) | 0,
             y = (this.y + 0.5) | 0,
@@ -42,6 +59,7 @@ Mix.define('Planet', {
             ctx.stroke();
         }
 
+
         ctx.lineWidth = 1;
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
@@ -55,7 +73,12 @@ Mix.define('Planet', {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.countUnits, x, y);
-//        ctx.stroke();
+
+        this.drawLevel(ctx);
+        this.drawUpgrade(ctx);
+    },
+    onMouseClick: function(e){
+        alert('click');
     }
 
 });
