@@ -81,8 +81,19 @@
                 name:classPath,
                 requires:requires,
                 body:function () {
-                    var parent = parentClassNamespace && parentClassNamespace[parentClassName] || Mix.Class;
-                    classNamespace[className] = parent.create(config);
+                    var parent = parentClassNamespace && parentClassNamespace[parentClassName] || Mix.Class,
+                        newClass = parent.create(config);
+
+                    //добавляю статические функции
+                    for(var f in config){
+                        if(/static_/.test(f)){
+                            var funcName = f.substring(7);
+                            newClass[funcName] = config[f];
+                        }
+                    }
+                    console.log(newClass);
+
+                    classNamespace[className] = newClass;
                 }
             });
         },
@@ -135,7 +146,7 @@
         onProgress:function (count, val) {
             if (count <= 0) return;
             var p = val * 100 / count;
-            console.log('progress: ' + Math.round(p) + '%');
+            //console.log('progress: ' + Math.round(p) + '%');//debug
         },
         loadScript:function (name, requiredFrom) {
             var url = this.prefixPath + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');

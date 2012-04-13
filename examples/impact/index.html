@@ -33,8 +33,11 @@
         nocache:false
     }).module({
                 name:'main',
-                requires:['Game', 'stats'],
+                requires:['Game', 'Vector', 'stats'],
                 body:function () {
+//                    Vector.staticTest();
+//                    Vector.staticTest2();
+//                    return;
                     var game = new Game();
                     //тестирование скорости удаления
                     /*
