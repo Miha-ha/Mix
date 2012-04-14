@@ -1,13 +1,13 @@
-Mix.define('Game', ['stats', 'Planet', 'Player', 'AI'], {
-    entities:[],
-    comps:[],
-    planets:[],
+Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
     init:function (count) {
         this.debug = 1;
         //типы сущностей
         this.planetsTypes = [
             {color:'#FF0000'}
         ];
+        this.entities = new List();
+        this.comps = new List();
+        this.planets = new List();
 
         this.initGraphics();
         this.genLevel();
@@ -28,8 +28,8 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI'], {
     genLevel:function () {
         //создаю игроков
         this.human = new Player('HUMAN', this);
-        this.comps.push(new Player('COMP', this));
-        this.comps.push(new Player('COMP', this));
+        this.comps.add(0, new Player('COMP', this));
+        this.comps.add(1, new Player('COMP', this));
         //создаю планеты и распределяю планеты
         this.countPlanets = this.rnd(15, 30);
         for (var i = this.countPlanets; i > -1; --i) {
@@ -39,33 +39,33 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI'], {
                 y = this.rnd(50, this.canvasHeight - 50);
                 //проверка: не пересекается ли планета с другими
                 var ok = true;
-                for (var p = 0, l = this.entities.length; p < l; ++p) {
-                    var dx = this.entities[p].x - x,
-                        dy = this.entities[p].y - y,
+                this.entities.each(function (index) {
+                    var dx = this.x - x,
+                        dy = this.y - y,
                         g = Math.sqrt(dx * dx + dy * dy);
                     if (g < 100) {
                         ok = false;
-                        break;
+                        return false;
                     }
+                });
 
-                }
                 if (ok) break;
             }
             var planet = new Planet(x, y, this);
-            this.entities.push(planet);
-            this.planets.push(planet);
+            this.entities.add(planet.id, planet);
+            this.planets.add(planet.id, planet);
         }
 
         //распределяю планеты по игрокам
-        this.entities[0].setOwner(this.human);
-        this.entities[0].maxUnits = 50;
-        this.entities[0].countUnits = 40;
-        this.entities[1].setOwner(this.comps[0]);
-        this.entities[1].maxUnits = 50;
-        this.entities[1].countUnits = 40;
-        this.entities[2].setOwner(this.comps[1]);
-        this.entities[2].maxUnits = 50;
-        this.entities[2].countUnits = 40;
+        this.entities.get(0).setOwner(this.human);
+        this.entities.get(0).maxUnits = 50;
+        this.entities.get(0).countUnits = 40;
+        this.entities.get(1).setOwner(this.comps.get(0));
+        this.entities.get(1).maxUnits = 50;
+        this.entities.get(1).countUnits = 40;
+        this.entities.get(2).setOwner(this.comps.get(1));
+        this.entities.get(2).maxUnits = 50;
+        this.entities.get(2).countUnits = 40;
 
     },
     initEvents:function () {
@@ -100,19 +100,16 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI'], {
         this.canvasHeight = this.canvas.height;
     },
     render:function () {
-        var i, l;
-        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        for (i = this.entities.length - 1; i > -1; --i) {
-            var cur = this.entities[i];
-            cur.render();
-            cur.update();
-            if (cur.isKilled) {
-                this.entities.splice(i, 1);
-                console.log('Entity c ind=' + i + ' удален!');
+        var me = this;
+        me.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        me.entities.each(function (index) {
+            this.render();
+            this.update();
+            if (this.isKilled) {
+                me.entities.remove(index)
             }
-        }
+        });
 
-        this.fordelete = [];
     },
     run:function () {
         var me = this;
@@ -127,39 +124,37 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI'], {
         loop();
     },
     onMouseClick:function (e) {
-        var i, l;
+        var me = this,
+            select = false;
 
-        var select = false;
-        for (i = 0, l = this.entities.length; i < l; ++i) {
-            var cur = this.entities[i];
+        this.entities.each(function () {
+            var cur = this;
             var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
             if (dist <= cur.r) {
                 cur.onMouseClick(e);
-                this.human.selectPlanet(cur, true);
+                me.human.selectPlanet(cur, true);
                 select = true;
-                break;
+                return false;
             }
-        }
+        });
 
         if (!select) {
-//            for (i = this.human.selected.length - 1; i > -1; i--) {
-//                this.human.selectPlanet(this.human.selected[i], false);
-//            }
             this.human.unselectPlanets();
         }
 
     },
     onMouseDbClick:function (e) {
-        var i, l;
+        var me = this;
 
-        for (i = 0, l = this.entities.length; i < l; ++i) {
-            var cur = this.entities[i];
+        this.entities.each(function () {
+            var cur = this;
             var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
             if (dist <= cur.r) {
-                this.human.sendTo(cur);
-                break;
+                cur.onMouseDbClick(e);
+                me.human.sendTo(cur);
+                return false;
             }
-        }
+        });
 
     },
     rnd:function (min, max) {

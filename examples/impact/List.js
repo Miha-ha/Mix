@@ -1,7 +1,7 @@
 Mix.define('List', {
-    items:{},
     init:function () {
         this.length = 0;
+        this.items = {};
     },
     add:function (index, item) {
         this.items[index] = item;
@@ -25,7 +25,8 @@ Mix.define('List', {
     },
     each:function (f) {
         for (var i in this.items) {
-            f.call(this.items[i]);
+            if (false === f.call(this.items[i], i))
+                break;
         }
     }
 });

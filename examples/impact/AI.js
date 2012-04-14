@@ -19,29 +19,24 @@ Mix.define('AI', {
     getTarget:function (player) {
         var target = null,
             countForwards = player.countForwards();
-        for (var i = 0, l = this.game.planets.length; i < l; ++i) {
-            var planet = this.game.planets[i];
-
-
+        this.game.planets.each(function () {
+            var planet = this;
             //если расстояние от любой планеты нападающих позволяет напасть
             var distanceOk = false;
-            for (var k = 0, l2 = player.selected.length; k < l2; ++k) {
-                var d = player.selected[k].getDistance(planet, false);
-                //console.log('Дистанция: '+Math.floor(d)+', юнитов: '+planet.countUnits);
-                if (d < 300) {
-                    distanceOk = true;
-                    break;
-                }
-            }
 
-            if (!distanceOk) continue;
+            player.selected.each(function () {
+                var d = this.getDistance(planet, false);
+                if (d < 400) {
+                    distanceOk = true;
+                    return false;
+                }
+            });
+
+            if (!distanceOk) return true;
 
             if (planet.owner != player)
                 target = planet;
-
-//            if (target && planet.countUnits >= target.countUnits)
-//                target = null;
-        }
+        });
 
         if (target && target.countUnits <= countForwards)
             return target;
@@ -55,29 +50,30 @@ Mix.define('AI', {
     selectForwards:function (player) {
         var ok = false;
         player.unselectPlanets();
-        for (var i = 0, l = this.game.planets.length; i < l; ++i) {
-            var planet = this.game.planets[i],
+
+        this.game.planets.each(function (index) {
+            var planet = this,
                 u = Math.floor(planet.maxUnits / 3);
 
             if (planet.owner == player && planet.countUnits >= u) {
                 player.selectPlanet(planet, true);
                 ok = true;
             }
-        }
+        });
         return ok;
     },
     process:function () {
-        for (var i = 0, l = this.game.comps.length; i < l; ++i) {
-            var comp = this.game.comps[i];
-            if (Math.random() > 0.9) continue;//смелость при атаке
-            if (this.selectForwards(comp)) {
-                var targetPlanet = this.getTarget(comp);
+        var me = this;
+        this.game.comps.each(function () {
+            var comp = this;
+            if (Math.random() > 0.9) return true;//смелость при атаке
+            if (me.selectForwards(comp)) {
+                var targetPlanet = me.getTarget(comp);
                 if (targetPlanet) {
                     comp.sendTo(targetPlanet);
                 }
             }
-
-        }
+        });
     }
 
 });

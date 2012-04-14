@@ -1,5 +1,4 @@
 Mix.define('Player', ['Unit'], {
-    selected:[],
     init:function (type, game) {
         this.type = type; //HUMAN or COMP
         this.game = game;
@@ -7,25 +6,25 @@ Mix.define('Player', ['Unit'], {
         if (this.type == 'HUMAN') {
             this.color = '#FF0000';
         }
+        this.selected = new List();
     },
     sendTo:function (planet) {
-        var i,
-            l = this.selected.length,
+        var me = this,
             sendersCount = 0;
-        if (l == 0) return;
 
-        for (i = 0; i < l; ++i) {
-            var cur = this.selected[i],
+        this.selected.each(function () {
+            var cur = this,
                 units = Math.floor(cur.countUnits / 2 + 0.5);
 
             if (cur.countUnits - units >= 0 && units > 0) {
                 if (cur != planet) {
                     sendersCount++;
                     cur.countUnits -= units;
-                    this.game.entities.push(new Unit(cur, planet, units, this.game));
+                    var unit = new Unit(cur, planet, units, me.game);
+                    me.game.entities.add(unit.id, unit);
                 }
             }
-        }
+        });
 
         if (sendersCount > 0)
             this.unselectPlanets();
@@ -37,28 +36,25 @@ Mix.define('Player', ['Unit'], {
             if (planet.owner.type == 'HUMAN')
                 planet.select(flag);
             if (flag) {
-                this.selected.push(planet);
+                this.selected.add(planet.id, planet);
             } else {
-                var ind = this.selected.indexOf(planet);
-                this.selected.splice(ind, 1);//TODO: избавиться от splice
+                this.selected.remove(planet.id);
             }
         } else {
             this.sendTo(planet);
         }
     },
     unselectPlanets:function () {
-        var l = this.selected.length;
-        if (l < 1) return;
-        //снимаю выделение
-        for (var i = l - 1; i > -1; i--) {
-            this.selectPlanet(this.selected[i], false);
-        }
+        var me = this;
+        this.selected.each(function () {
+            me.selectPlanet(this, false);
+        });
     },
     countForwards:function () {
         var count = 0;
-        for (var i = 0, l = this.selected.length; i < l; ++i) {
-            count += this.selected[i].countUnits;
-        }
+        this.selected.each(function () {
+            count += this.countUnits;
+        });
         return Math.floor(count / 2);
     }
 

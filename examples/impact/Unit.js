@@ -36,33 +36,33 @@ Mix.define('Unit', {
     },
     war:function () {
         var goodluck = this.game.rnd(-30, 30); //Коэффициент удачи
-        console.log('Удача ' + goodluck);
+//        console.log('Удача ' + goodluck);
 
         this.length += Math.floor(this.length / 100 * goodluck);
         if (this.length < 0) this.length = 0;
 
-        console.log('Нападение на противника - нап.:' + this.length + ', оборон.:' + this.to.countUnits);
+//        console.log('Нападение на противника - нап.:' + this.length + ', оборон.:' + this.to.countUnits);
 
         var diff = this.to.countUnits - this.length;
 
         if (diff >= 0) {
             this.to.countUnits = diff;
-            console.log('Поражение :( юнитов осталось ' + this.to.countUnits);
+//            console.log('Поражение :( юнитов осталось ' + this.to.countUnits);
         } else {
             this.to.countUnits = Math.abs(diff);
             this.to.setOwner(this.owner);
-            console.log('Победа!');
+//            console.log('Победа!');
         }
 
     },
     support:function () {
-        console.log('Подкрепление - было: ' + this.to.countUnits + ', прибыло: ' + this.length);
+//        console.log('Подкрепление - было: ' + this.to.countUnits + ', прибыло: ' + this.length);
         this.to.countUnits += this.length;
     },
     render:function () {
         var x = (this.x + 0.5) | 0,
             y = (this.y + 0.5) | 0,
-            r = 10,
+            r = 7,
             ctx = this.game.ctx;
 
         //ctx.strokeStyle = this.color;
