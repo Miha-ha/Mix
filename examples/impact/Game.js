@@ -1,9 +1,9 @@
-Mix.define('Game', ['Planet', 'Player', 'AI'], {
+Mix.define('Game', ['stats', 'Planet', 'Player', 'AI'], {
     entities:[],
     comps:[],
     planets:[],
-    fordelete:[],
     init:function (count) {
+        this.debug = 1;
         //типы сущностей
         this.planetsTypes = [
             {color:'#FF0000'}
@@ -14,6 +14,16 @@ Mix.define('Game', ['Planet', 'Player', 'AI'], {
         this.initEvents();
 
         this.ai = new AI(this);
+        if (typeof Stats == 'function' && 1 == this.debug) {
+            this.stats = new Stats();
+            this.stats.domElement.style.position = 'fixed';
+            this.stats.domElement.style.left = '0px';
+            this.stats.domElement.style.top = '0px';
+            document.body.appendChild(this.stats.domElement);
+//            setInterval(function () {
+//                stats.update();
+//            }, 1000 / 60);
+        }
     },
     genLevel:function () {
         //создаю игроков
@@ -102,10 +112,6 @@ Mix.define('Game', ['Planet', 'Player', 'AI'], {
             }
         }
 
-//        for (i = 0, l = this.fordelete.length; i < l; ++i) {
-//            this.entities.splice(this.fordelete[i], 1);
-//        }
-
         this.fordelete = [];
     },
     run:function () {
@@ -113,6 +119,9 @@ Mix.define('Game', ['Planet', 'Player', 'AI'], {
 
         var loop = function () {
             me.render();
+            if (1 == me.debug) {
+                me.stats.update();
+            }
             requestAnimFrame(loop);
         };
         loop();

@@ -47,14 +47,12 @@ Mix.define('Player', ['Unit'], {
         }
     },
     unselectPlanets:function () {
+        var l = this.selected.length;
+        if (l < 1) return;
         //снимаю выделение
-        for (var i = this.selected.length - 1; i > -1; i--) {
+        for (var i = l - 1; i > -1; i--) {
             this.selectPlanet(this.selected[i], false);
-//            this.selected.splice(i, 1);
         }
-        console.log('Выделение снято: ' + (this.selected.length == 0));
-        this.selected = [];
-        console.log(this.selected);
     },
     countForwards:function () {
         var count = 0;

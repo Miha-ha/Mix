@@ -1,13 +1,13 @@
 Mix.define('Unit', {
     extend:'Entity',
-    count:30,
+    length:30,
     speed:0.7,
     init:function (from, to, count, game) {
         this._super(from.x, from.y, game);
         this.color = from.color;
         this.owner = from.owner;
         this.to = to;
-        this.count = count;
+        this.length = count;
 
         //вычисляю вектор скорости
         var tvx = to.x - from.x;
@@ -38,12 +38,12 @@ Mix.define('Unit', {
         var goodluck = this.game.rnd(-30, 30); //Коэффициент удачи
         console.log('Удача ' + goodluck);
 
-        this.count += Math.floor(this.count / 100 * goodluck);
-        if (this.count < 0) this.count = 0;
+        this.length += Math.floor(this.length / 100 * goodluck);
+        if (this.length < 0) this.length = 0;
 
-        console.log('Нападение на противника - нап.:' + this.count + ', оборон.:' + this.to.countUnits);
+        console.log('Нападение на противника - нап.:' + this.length + ', оборон.:' + this.to.countUnits);
 
-        var diff = this.to.countUnits - this.count;
+        var diff = this.to.countUnits - this.length;
 
         if (diff >= 0) {
             this.to.countUnits = diff;
@@ -56,8 +56,8 @@ Mix.define('Unit', {
 
     },
     support:function () {
-        console.log('Подкрепление - было: ' + this.to.countUnits + ', прибыло: ' + this.count);
-        this.to.countUnits += this.count;
+        console.log('Подкрепление - было: ' + this.to.countUnits + ', прибыло: ' + this.length);
+        this.to.countUnits += this.length;
     },
     render:function () {
         var x = (this.x + 0.5) | 0,
@@ -76,7 +76,7 @@ Mix.define('Unit', {
         ctx.fillStyle = '#000000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.count, x, y);
+        ctx.fillText(this.length, x, y);
     }
 
 

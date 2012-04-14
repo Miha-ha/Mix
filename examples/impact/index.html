@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Mix canvas example</title>
+    <title>Impact</title>
     <style type="text/css">
         body {
             background: #000000;
@@ -33,54 +33,10 @@
         nocache:false
     }).module({
                 name:'main',
-                requires:['Game', 'Vector', 'stats'],
+                requires:['Game', 'Vector', 'List', 'stats'],
                 body:function () {
-//                    Vector.staticTest();
-//                    Vector.staticTest2();
-//                    return;
                     var game = new Game();
-                    //тестирование скорости удаления
-                    /*
-                     var count = 10000,
-                     start = Date.now(),
-                     i = 0,
-                     t1 = [],
-                     t2 = {};
-
-                     for(i=0; i<count; ++i){
-                     t1.push(new Planet(10, 10, game));
-                     }
-
-                     for(i=t1.length; i>-1; --i)
-                     t1.splice(i, 1);
-
-                     console.log('time: '+(Date.now()-start)+', length: '+t1.length);
-                     start = Date.now();
-                     for(i=0; i<count; ++i){
-                     t2[i] = new Planet(10, 10, game);
-                     }
-
-                     for(i in t2){
-                     delete t2[i];
-                     }
-                     console.log('time: '+(Date.now()-start)+', length: '+t2.length);
-                     */
-
                     game.run();
-
-                    if (typeof Stats == 'function') {
-                        //clearInterval(interval);
-                        var stats = new Stats();
-                        stats.domElement.style.position = 'fixed';
-                        stats.domElement.style.left = '0px';
-                        stats.domElement.style.top = '0px';
-                        document.body.appendChild(stats.domElement);
-                        setInterval(function () {
-                            stats.update();
-                        }, 1000 / 60);
-
-                    }
-
                 }
 
             });

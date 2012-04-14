@@ -85,14 +85,13 @@
                         newClass = parent.create(config);
 
                     //добавляю статические функции
-                    for(var f in config){
-                        if(/static_/.test(f)){
+                    for (var f in config) {
+                        if (!config.hasOwnProperty(f)) continue;
+                        if (/static_/.test(f)) {
                             var funcName = f.substring(7);
                             newClass[funcName] = config[f];
                         }
                     }
-                    console.log(newClass);
-
                     classNamespace[className] = newClass;
                 }
             });

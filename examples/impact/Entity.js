@@ -1,10 +1,12 @@
 Mix.define('Entity', {
+    static_lastId:0,
     isSelect:false,
     isKilled:false,
     init:function (x, y, game) {
         this.x = x;
         this.y = y;
         this.game = game;
+        this.id = ++Entity.lastId;
     },
     update:function () {
     },
@@ -25,9 +27,13 @@ Mix.define('Entity', {
             g = x * x + y * y;
         return squared ? g : Math.sqrt(g);
     },
-    getBounds: function(){},
-    onMouseMove: function(e){},
-    onMouseClick: function(e){},
-    onMouseDbClick: function(e){}
+    getBounds:function () {
+    },
+    onMouseMove:function (e) {
+    },
+    onMouseClick:function (e) {
+    },
+    onMouseDbClick:function (e) {
+    }
 
 });
