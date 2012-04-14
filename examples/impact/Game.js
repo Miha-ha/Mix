@@ -1,6 +1,6 @@
 Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
     init:function (count) {
-        this.debug = 1;
+        this.debug = 0;
         //типы сущностей
         this.planetsTypes = [
             {color:'#FF0000'}
@@ -40,8 +40,8 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
                 //проверка: не пересекается ли планета с другими
                 var ok = true;
                 this.entities.each(function (index) {
-                    var dx = this.x - x,
-                        dy = this.y - y,
+                    var dx = this.pos.x - x,
+                        dy = this.pos.y - y,
                         g = Math.sqrt(dx * dx + dy * dy);
                     if (g < 100) {
                         ok = false;
@@ -129,7 +129,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
 
         this.entities.each(function () {
             var cur = this;
-            var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
+            var dist = Math.sqrt((e.x - cur.pos.x) * (e.x - cur.pos.x) + (e.y - cur.pos.y) * (e.y - cur.pos.y));
             if (dist <= cur.r) {
                 cur.onMouseClick(e);
                 me.human.selectPlanet(cur, true);
@@ -148,7 +148,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
 
         this.entities.each(function () {
             var cur = this;
-            var dist = Math.sqrt((e.x - cur.x) * (e.x - cur.x) + (e.y - cur.y) * (e.y - cur.y));
+            var dist = Math.sqrt((e.x - cur.pos.x) * (e.x - cur.pos.x) + (e.y - cur.pos.y) * (e.y - cur.pos.y));
             if (dist <= cur.r) {
                 cur.onMouseDbClick(e);
                 me.human.sendTo(cur);

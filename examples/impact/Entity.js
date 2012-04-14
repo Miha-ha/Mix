@@ -1,10 +1,10 @@
-Mix.define('Entity', {
+Mix.define('Entity', ['Vector'], {
     static_lastId:-1,
     isSelect:false,
     isKilled:false,
     init:function (x, y, game) {
-        this.x = x;
-        this.y = y;
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
         this.game = game;
         this.id = ++Entity.lastId;
     },
@@ -17,12 +17,6 @@ Mix.define('Entity', {
     },
     kill:function () {
         this.isKilled = true;
-    },
-    getDistance:function (entity, squared) {
-        var x = entity.x - this.x,
-            y = entity.y - this.y,
-            g = x * x + y * y;
-        return squared ? g : Math.sqrt(g);
     },
     getBounds:function () {
     },

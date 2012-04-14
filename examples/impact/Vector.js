@@ -1,24 +1,25 @@
 Mix.define('Vector', {
     init:function () {
+        var countArgs = arguments.length;
         this.x = 0.0;
         this.y = 0.0;
 
-        if (arguments === 2) {
+        if (countArgs === 2) {
             this.x = arguments[0];
             this.y = arguments[1];
-        } else if (arguments === 1) {
+        } else if (countArgs === 1) {
             this.x = arguments[0].x;
             this.y = arguments[0].y;
         }
     },
 
-    set: function(x, y) {
+    set:function (x, y) {
         this.x = x;
         this.y = y;
         return this;
     },
 
-    clone: function() {
+    clone:function () {
         return new Vector(this.x, this.y);
     },
 
@@ -29,52 +30,52 @@ Mix.define('Vector', {
         return squared ? g : Math.sqrt(g);
     },
 
-    isNaN: function() {
+    isNaN:function () {
         return isNaN(this.x) || isNaN(this.y);
     },
 
-    isZero: function() {
+    isZero:function () {
         return this.x == 0 && this.y == 0;
     },
 
-    getLength: function(squared) {
+    getLength:function (squared) {
         var l = this.x * this.x + this.y * this.y;
         return squared ? l : Math.sqrt(l);
     },
 
-    neg: function() {
+    neg:function () {
         return new Vector(-this.x, -this.y);
     },
 
-    add: function(vector) {
+    add:function (vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
     },
 
-    sub: function(vector) {
+    sub:function (vector) {
         return new Vector(this.x - vector.x, this.y - vector.y);
     },
 
-    mul: function(vector) {
+    mul:function (vector) {
         return new Vector(this.x * vector.x, this.y * vector.y);
     },
 
-    div: function(vector) {
+    div:function (vector) {
         return new Vector(this.x / vector.x, this.y / vector.y);
     },
 
-    mod: function(vector) {
+    mod:function (vector) {
         return new Vector(this.x % vector.x, this.y % vector.y);
     },
 
-    dot: function(vector) {
+    dot:function (vector) {
         return this.x * vector.x + this.y * vector.y;
     },
 
-    cross: function(vector) {
+    cross:function (vector) {
         return this.x * vector.y - this.y * vector.x;
     },
 
-    project: function(vector) {
+    project:function (vector) {
         if (vector.isZero()) {
             return new Vector(0, 0);
         } else {
@@ -86,11 +87,11 @@ Mix.define('Vector', {
         }
     },
 
-    getDirectedAngle: function(vector) {
+    getDirectedAngle:function (vector) {
         return Math.atan2(this.cross(vector), this.dot(vector)) * 180 / Math.PI;
     },
 
-    toString: function() {
+    toString:function () {
         return '{ x: ' + this.x + ', y: ' + this.y + ' }';
     }
 });

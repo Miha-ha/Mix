@@ -34,20 +34,20 @@ Mix.define('Planet', {
         ctx.fillStyle = '#FFFFFF';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(this.level, this.x - this.r, this.y - this.r);
+        ctx.fillText(this.level, this.pos.x - this.r, this.pos.y - this.r);
     },
     drawUpgrade:function (ctx) {
         ctx.lineWidth = 1;
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this.x + this.r, this.y - this.r, 5, 0, Math.PI * 2, true);
+        ctx.arc(this.pos.x + this.r, this.pos.y - this.r, 5, 0, Math.PI * 2, true);
         ctx.closePath();
         ctx.fill();
     },
     render:function () {
-        var x = (this.x + 0.5) | 0,
-            y = (this.y + 0.5) | 0,
+        var x = (this.pos.x + 0.5) | 0,
+            y = (this.pos.y + 0.5) | 0,
             ctx = this.game.ctx;
 
         if (this.isSelect) {

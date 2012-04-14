@@ -25,7 +25,7 @@ Mix.define('AI', {
             var distanceOk = false;
 
             player.selected.each(function () {
-                var d = this.getDistance(planet, false);
+                var d = this.pos.getDistance(planet.pos, false);
                 if (d < 400) {
                     distanceOk = true;
                     return false;

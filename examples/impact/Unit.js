@@ -3,28 +3,28 @@ Mix.define('Unit', {
     length:30,
     speed:0.7,
     init:function (from, to, count, game) {
-        this._super(from.x, from.y, game);
+        this._super(from.pos.x, from.pos.y, game);
         this.color = from.color;
         this.owner = from.owner;
         this.to = to;
         this.length = count;
 
         //вычисляю вектор скорости
-        var tvx = to.x - from.x;
-        var tvy = to.y - from.y;
-        var l = this.getDistance(to, false);//Math.sqrt(tvx * tvx + tvy * tvy);
-        this.speedX = Math.abs(this.speed * tvx / l);
-        this.speedY = Math.abs(this.speed * tvy / l);
+        var tvx = to.pos.x - from.pos.x;
+        var tvy = to.pos.y - from.pos.y;
+        var l = this.pos.getDistance(to.pos, false);//Math.sqrt(tvx * tvx + tvy * tvy);
+        this.vel.x = Math.abs(this.speed * tvx / l);
+        this.vel.y = Math.abs(this.speed * tvy / l);
     },
     update:function () {
         if (this.isKilled) return;
-        if (this.x < this.to.x) this.x += this.speedX;
-        if (this.x > this.to.x) this.x -= this.speedX;
-        if (this.y < this.to.y) this.y += this.speedY;
-        if (this.y > this.to.y) this.y -= this.speedY;
+        if (this.pos.x < this.to.pos.x) this.pos.x += this.vel.x;
+        if (this.pos.x > this.to.pos.x) this.pos.x -= this.vel.x;
+        if (this.pos.y < this.to.pos.y) this.pos.y += this.vel.y;
+        if (this.pos.y > this.to.pos.y) this.pos.y -= this.vel.y;
 
         //если юниты долетели, то начинаем бой
-        if (this.getDistance(this.to, true) < this.to.r * this.to.r) {
+        if (this.pos.getDistance(this.to.pos, true) < this.to.r * this.to.r) {
             //Проверяем, если планеты принадлежат одному вождю, то высылаем подкреп, иначе война
             if (this.to.owner == this.owner) {
                 this.support();
@@ -60,9 +60,9 @@ Mix.define('Unit', {
         this.to.countUnits += this.length;
     },
     render:function () {
-        var x = (this.x + 0.5) | 0,
-            y = (this.y + 0.5) | 0,
-            r = 7,
+        var x = (this.pos.x + 0.5) | 0,
+            y = (this.pos.y + 0.5) | 0,
+            r = 8,
             ctx = this.game.ctx;
 
         //ctx.strokeStyle = this.color;
