@@ -13,15 +13,11 @@ Mix.define('Unit', {
         var tvx = to.pos.x - from.pos.x;
         var tvy = to.pos.y - from.pos.y;
         var l = this.pos.getDistance(to.pos, false);//Math.sqrt(tvx * tvx + tvy * tvy);
-        this.vel.x = Math.abs(this.speed * tvx / l);
-        this.vel.y = Math.abs(this.speed * tvy / l);
+        this.vel.x = (this.speed * tvx / l);
+        this.vel.y = (this.speed * tvy / l);
     },
     update:function () {
-        if (this.isKilled) return;
-        if (this.pos.x < this.to.pos.x) this.pos.x += this.vel.x;
-        if (this.pos.x > this.to.pos.x) this.pos.x -= this.vel.x;
-        if (this.pos.y < this.to.pos.y) this.pos.y += this.vel.y;
-        if (this.pos.y > this.to.pos.y) this.pos.y -= this.vel.y;
+        if (!this._super()) return false;
 
         //если юниты долетели, то начинаем бой
         if (this.pos.getDistance(this.to.pos, true) < this.to.r * this.to.r) {
@@ -33,6 +29,7 @@ Mix.define('Unit', {
             }
             this.kill();
         }
+        return true;
     },
     war:function () {
         var goodluck = this.game.rnd(-30, 30); //Коэффициент удачи

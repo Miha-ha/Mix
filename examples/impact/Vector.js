@@ -91,6 +91,10 @@ Mix.define('Vector', {
         return Math.atan2(this.cross(vector), this.dot(vector)) * 180 / Math.PI;
     },
 
+    equals:function (vector) {
+        return this.x == vector.x && this.y == vector.y;
+    },
+
     toString:function () {
         return '{ x: ' + this.x + ', y: ' + this.y + ' }';
     }

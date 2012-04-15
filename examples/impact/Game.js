@@ -1,6 +1,6 @@
-Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
+Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
     init:function (count) {
-        this.debug = 0;
+        this.debug = 1;
         //типы сущностей
         this.planetsTypes = [
             {color:'#FF0000'}
@@ -14,6 +14,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
         this.initEvents();
 
         this.ai = new AI(this);
+        this.map = new Map(10, 6, this);
         if (typeof Stats == 'function' && 1 == this.debug) {
             this.stats = new Stats();
             this.stats.domElement.style.position = 'fixed';
@@ -102,6 +103,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
     render:function () {
         var me = this;
         me.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
         me.entities.each(function (index) {
             this.render();
             this.update();
@@ -118,6 +120,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List'], {
             me.render();
             if (1 == me.debug) {
                 me.stats.update();
+                me.map.render();
             }
             requestAnimFrame(loop);
         };
