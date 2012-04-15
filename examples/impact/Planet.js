@@ -7,7 +7,7 @@ Mix.define('Planet', {
     level:1,
     init:function (x, y, game) {
         this._super(x, y, game);
-        this.color = '#AA9933';
+        this.color = 'gray';
         this.r = 20;
         this.maxUnits = game.rnd(10, 20);
         this.countUnits = game.rnd(1, this.maxUnits / 3);

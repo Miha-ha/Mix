@@ -46,6 +46,8 @@ Mix.define('Unit', {
             this.to.countUnits = diff;
 //            console.log('Поражение :( юнитов осталось ' + this.to.countUnits);
         } else {
+            if (this.to.owner)
+                this.to.owner.unselectPlanets();
             this.to.countUnits = Math.abs(diff);
             this.to.setOwner(this.owner);
 //            console.log('Победа!');
