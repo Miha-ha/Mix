@@ -113,7 +113,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
             this.render();
             this.update();
             if (this.isKilled) {
-                me.entities.remove(index)
+                me.entities.remove(index);
             }
         });
 
