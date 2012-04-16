@@ -1,10 +1,15 @@
 Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
+    static_entityType:{
+        planet:0,
+        unit:1
+    },
     init:function (count) {
         this.debug = 1;
         //типы сущностей
         this.planetsTypes = [
             {color:'#FF0000'}
         ];
+
         this.entities = new List();
         this.comps = new List();
         this.planets = new List();
@@ -14,7 +19,6 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.initEvents();
 
         this.ai = new AI(this);
-        this.map = new Map(10, 6, this);
         if (typeof Stats == 'function' && 1 == this.debug) {
             this.stats = new Stats();
             this.stats.domElement.style.position = 'fixed';
@@ -27,6 +31,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         }
     },
     genLevel:function () {
+        this.map = new Map(10, 6, this);
         //создаю игроков
         this.human = new Player('HUMAN', this);
         this.comps.add(0, new Player('COMP', this));
@@ -144,6 +149,9 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         if (!select) {
             this.human.unselectPlanets();
         }
+
+        //test
+        this.map.selectAround(e.x, e.y, 1);
 
     },
     onMouseDbClick:function (e) {

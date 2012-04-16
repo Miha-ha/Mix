@@ -2,7 +2,7 @@ Mix.define('Entity', ['Vector'], {
     static_lastId:-1,
     isSelect:false,
     isKilled:false,
-
+    type:0,
     init:function (x, y, game) {
         this.pos = new Vector(x, y);
         this.last = new Vector(x, y);

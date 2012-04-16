@@ -8,6 +8,7 @@ Mix.define('Unit', {
         this.owner = from.owner;
         this.to = to;
         this.length = count;
+        this.type = Game.entityType.unit;
 
         //вычисляю вектор скорости
         var tvx = to.pos.x - from.pos.x;
