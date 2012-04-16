@@ -151,7 +151,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         }
 
         //test
-        this.map.selectAround(e.x, e.y, 1);
+        //this.map.selectAround(e.x, e.y, 1);
 
     },
     onMouseDbClick:function (e) {

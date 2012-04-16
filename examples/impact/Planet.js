@@ -13,7 +13,7 @@ Mix.define('Planet', {
         this.maxUnits = game.rnd(10, 20);
         this.countUnits = game.rnd(1, this.maxUnits / 3);
         this.productivity = game.rnd(1, 3);
-        this.game.map.add(this);
+        //this.game.map.add(this);
         //console.log('countUnits: ' + this.countUnits + ', productivity: ' + this.productivity);
         setInterval(this.produce.bind(this), this.productivity * 1000);
     },
