@@ -77,6 +77,11 @@ Mix.define('Unit', {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.length, x, y);
+
+        ctx.fillStyle = this.color;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.id, x + r, y + r);
     }
 
 

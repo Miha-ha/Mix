@@ -1,7 +1,7 @@
 Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
     static_entityType:{
-        planet:0,
-        unit:1
+        planet:1,
+        unit:2
     },
     init:function (count) {
         this.debug = 1;
@@ -151,7 +151,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         }
 
         //test
-        //this.map.selectAround(e.x, e.y, 1);
+        //console.log(this.map.selectAround(e.x, e.y, 2));
 
     },
     onMouseDbClick:function (e) {
