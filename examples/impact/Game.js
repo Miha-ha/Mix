@@ -31,7 +31,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         }
     },
     genLevel:function () {
-        this.map = new Map(10, 6, this);
+        this.map = new Map(14, 10, this);
         //создаю игроков
         this.human = new Player('HUMAN', this);
         this.comps.add(0, new Player('COMP', this));
@@ -40,16 +40,18 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.countPlanets = this.rnd(15, 30);
         for (var i = this.countPlanets; i > -1; --i) {
             var x, y;
-            for (var j = 0; j < 10; ++j) {
+            for (var j = 0; j < 20; ++j) {
                 x = this.rnd(50, this.canvasWidth - 50);
                 y = this.rnd(50, this.canvasHeight - 50);
                 //проверка: не пересекается ли планета с другими
+                var planets = this.map.selectAround(x, y, 1, Game.entityType.planet);
+                console.log(planets.length);
                 var ok = true;
-                this.entities.each(function (index) {
+                planets.each(function (index) {
                     var dx = this.pos.x - x,
                         dy = this.pos.y - y,
                         g = Math.sqrt(dx * dx + dy * dy);
-                    if (g < 100) {
+                    if (g < 130) {
                         ok = false;
                         return false;
                     }

@@ -51,6 +51,82 @@ Mix.define('Map', ['List'], {
 //
 //        });
     },
+    selectAround:function (x, y, radius, type) {
+        radius = radius || 1;
+        var cellX = Math.floor(x / this.sw),
+            cellY = Math.floor(y / this.sh),
+            index = cellX + this.cw * cellY,
+            leftIndex = index,
+            rightIndex = index,
+            me = this,
+            entities = new List();
+
+        function visit(ind) {
+            me.map.get(ind).each(function (i) {
+                if (!type) {
+                    entities.add(this.id, this);
+                } else if (this.type == type) {
+                    entities.add(this.id, this);
+                }
+            });
+        }
+
+        function vert(ind) {
+            var upIndex = ind, downIndex = ind;
+            visit(ind);
+            for (var i = 0; i < radius; ++i) {
+                //up
+                var upRow = upIndex / me.cw | 0;
+                if (upRow > 0) {
+                    upIndex -= me.cw;
+                    visit(upIndex);
+                }
+
+                //down
+                var downRow = downIndex / me.cw | 0;
+                if (downRow < me.ch - 1) {
+                    downIndex += me.cw;
+                    visit(downIndex);
+                }
+
+            }
+        }
+
+        for (var i = 0; i <= radius; ++i) {
+
+            if (i == 0) {
+                vert(index)
+            } else {
+
+                //left
+                var leftColumn = leftIndex % this.cw;
+                if (leftColumn > 0) {
+                    //leftIndex = index -i;
+                    vert(--leftIndex);
+                }
+                //right
+                var rightColumn = rightIndex % this.cw;
+                if (rightColumn < this.cw - 1) {
+                    //rightIndex = index + i;
+                    vert(++rightIndex);
+                }
+            }
+        }
+
+        return entities;
+    },
+    add:function (entity) {
+        var cellX = Math.floor(entity.pos.x / this.sw),
+            cellY = Math.floor(entity.pos.y / this.sh),
+            index = cellX + this.cw * cellY;
+        if (index >= 0 && index < this.map.length) {
+            var cell = this.map.get(index);
+            if (!cell.get(entity.id))
+                cell.add(entity.id, entity);
+
+        }
+
+    },
     entityMoved:function (entity, removed) {
         if (entity.last.equals(entity.pos)) return;
 
