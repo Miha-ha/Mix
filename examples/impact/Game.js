@@ -36,8 +36,9 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.human = new Player('HUMAN', this);
         this.comps.add(0, new Player('COMP', this));
         this.comps.add(1, new Player('COMP', this));
+        this.comps.add(2, new Player('COMP', this));
         //создаю планеты и распределяю планеты
-        this.countPlanets = this.rnd(15, 30);
+        this.countPlanets = this.rnd(20, 50);
         for (var i = this.countPlanets; i > -1; --i) {
             var x, y;
             for (var j = 0; j < 20; ++j) {
@@ -74,6 +75,9 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.entities.get(2).setOwner(this.comps.get(1));
         this.entities.get(2).maxUnits = 50;
         this.entities.get(2).countUnits = 40;
+        this.entities.get(3).setOwner(this.comps.get(2));
+        this.entities.get(3).maxUnits = 50;
+        this.entities.get(3).countUnits = 40;
 
     },
     initEvents:function () {
