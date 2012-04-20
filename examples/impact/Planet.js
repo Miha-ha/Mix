@@ -1,4 +1,4 @@
-Mix.define('Planet', {
+Mix.define('Planet', ['List', 'Unit'], {
     extend:'Entity',
     productivity:1, //продуктивность планеты: кол-во секунд через которое рождается один юнит
     countUnits:0, //текущее количество юнитов на планете
@@ -6,6 +6,7 @@ Mix.define('Planet', {
     owner:null, //владелец планеты - объект класса Player
     level:1,
     maxLevel:5,
+    targets:new List(),
     static_skills:{
         1:{maxUnits:10, productivity:3, upgradeTime:3},
         2:{maxUnits:20, productivity:2, upgradeTime:3},
@@ -24,6 +25,20 @@ Mix.define('Planet', {
         this.game.map.add(this);
         //console.log('countUnits: ' + this.countUnits + ', productivity: ' + this.productivity);
         this.restartTimerProductivity(false);
+    },
+    send:function () {
+        var me = this;
+        this.targets.each(function () {
+            var units = Math.floor(me.countUnits / 2);
+            if (me.countUnits - units >= 0 && units > 0) {
+                if (me != this) {
+                    me.countUnits -= units;
+                    var unit = new Unit(me, this, units, me.game);
+                    me.game.entities.add(unit.id, unit);
+                }
+            }
+        });
+        this.targets.clear();
     },
     restartTimerProductivity:function (stop) {
         if (this.timerProductivity) {

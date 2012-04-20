@@ -1,4 +1,4 @@
-Mix.define('AI', {
+Mix.define('AI', ['List'], {
     init:function (game) {
         this.game = game;
         this.process();
@@ -17,32 +17,86 @@ Mix.define('AI', {
      * и выбрать планету с лучшим коэфф.
      * @param player
      */
-    getTarget:function (player) {
-        var target = null,
+    getTargets:function (player) {
+        var targets = new List(),
             countForwards = player.countForwards();
-        this.game.planets.each(function () {
-            var planet = this;
-            //если расстояние от любой планеты нападающих позволяет напасть
-            var distanceOk = false;
+//        this.game.planets.each(function () {
+//            var planet = this;
+//            //если расстояние от любой планеты нападающих позволяет напасть
+//            var distanceOk = false;
+//
+//            player.selected.each(function () {
+//                var d = this.pos.getDistance(planet.pos, false);
+//                if (d < 400) {
+//                    distanceOk = true;
+//                    return false;
+//                }
+//            });
+//
+//            if (!distanceOk) return true;
+//
+//            if (planet.owner != player)
+//                target = planet;
+//        });
 
-            player.selected.each(function () {
-                var d = this.pos.getDistance(planet.pos, false);
-                if (d < 400) {
-                    distanceOk = true;
-                    return false;
+        //перебираю выбранные для атаки планеты
+        player.selected.each(function () {
+            var attackPlanet = this,
+                target = null,
+                minT;
+            //выбираю доступные для полета планеты
+            var targetsTest = this.game.map.selectAround(this.pos.x, this.pos.y, 3, Game.entityType.planet);
+
+            targetsTest.each(function () {
+                if (attackPlanet == this || attackPlanet.owner == this.owner)
+                    return true;
+
+                var distance = attackPlanet.pos.getDistance(this.pos),
+                    //супер формула
+                    t = this.countUnits * 20 + distance + this.level * 10 + this.productivity * 10;
+
+                if (target && t < minT) {
+                    target = this;
+                    minT = t;
+                }
+
+                if (target == null) {
+                    target = this;
+                    minT = t;
                 }
             });
 
-            if (!distanceOk) return true;
 
-            if (planet.owner != player)
-                target = planet;
+            if (target) {
+                //нападаю
+                if (attackPlanet.countUnits > attackPlanet.maxUnits / 2) {
+                    attackPlanet.targets.add(target.id, target);
+                }
+            } else {
+                //посылаю подкрепление
+                if (attackPlanet.countUnits == attackPlanet.maxUnits) {
+                    var minUnits = 99999;
+                    targetsTest.each(function () {
+                        if (attackPlanet == this || attackPlanet.owner != this.owner)
+                            return true;
+
+                        if (this.countUnits < minUnits) {
+                            target = this;
+                            minUnits = this.countUnits;
+                        }
+                    });
+                    if (target)
+                        attackPlanet.targets.add(target.id, target);
+                }
+            }
+
+            attackPlanet.send();
+
+
         });
 
-        if (target && target.countUnits <= countForwards)
-            return target;
 
-        return null;
+        return targets;
     },
     /**
      *  Выбрать все планеты у которых больше половины от максимально возможного кол-ва юнитов
@@ -69,10 +123,10 @@ Mix.define('AI', {
             var comp = this;
             if (Math.random() > 0.9) return true;//смелость при атаке
             if (me.selectForwards(comp)) {
-                var targetPlanet = me.getTarget(comp);
-                if (targetPlanet) {
-                    comp.sendTo(targetPlanet);
-                }
+                var targetsPlanet = me.getTargets(comp);
+//               targetsPlanet.each(function(){
+//                    comp.sendTo(this);
+//                });
             }
         });
     }
