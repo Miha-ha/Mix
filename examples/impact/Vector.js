@@ -19,6 +19,10 @@ Mix.define('Vector', {
         return this;
     },
 
+    round:function () {
+        return new Vector((this.x + 0.5) | 0, (this.y + 0.5) | 0);
+    },
+
     clone:function () {
         return new Vector(this.x, this.y);
     },
@@ -49,6 +53,10 @@ Mix.define('Vector', {
 
     add:function (vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
+    },
+
+    addScalar:function (val) {
+        return new Vector(this.x + val, this.y + val);
     },
 
     sub:function (vector) {

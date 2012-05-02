@@ -3,6 +3,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         planet:1,
         unit:2
     },
+    static_context:null,
     init:function (count) {
         this.debug = 1;
         //типы сущностей
@@ -38,7 +39,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.comps.add(1, new Player('COMP', this));
         this.comps.add(2, new Player('COMP', this));
         //создаю планеты и распределяю планеты
-        this.countPlanets = this.rnd(20, 50);
+        this.countPlanets = this.rnd(10, 20);
         for (var i = this.countPlanets; i > -1; --i) {
             var x, y;
             for (var j = 0; j < 20; ++j) {
@@ -83,11 +84,13 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
     initEvents:function () {
         this.canvas.addEventListener("click", this.onMouseClick.bind(this), false);
         this.canvas.addEventListener('dblclick', this.onMouseDbClick.bind(this), false);
+        this.canvas.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
     },
     initGraphics:function () {
         this.bgcolor = '#000000';
         this.canvas = document.getElementById('Canvas2D');
         this.ctx = this.canvas.getContext('2d');
+        Game.context = this.ctx;//TODO: Заменить все this.ctx на это статическое свойство!
         this.resize();
         this.ctx.globalAlpha = 1;
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -116,6 +119,9 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         me.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         me.entities.each(function (index) {
+            if (this.debug) {
+                //TODO: добавить отрисовку доступных планет
+            }
             this.render();
             this.update();
             if (this.isKilled) {
@@ -157,8 +163,9 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         }
 
         //test
-        //console.log(this.map.selectAround(e.x, e.y, 2));
-
+//        console.log(e);
+        e.stopPropagation();
+        e.preventDefault();
     },
     onMouseDbClick:function (e) {
         var me = this;
@@ -173,6 +180,12 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
             }
         });
 
+        e.stopPropagation();
+        e.preventDefault();
+    },
+    onContextMenu:function (e) {
+        e.stopPropagation();
+        e.preventDefault();
     },
     rnd:function (min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;

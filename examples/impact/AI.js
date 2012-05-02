@@ -52,7 +52,7 @@ Mix.define('AI', ['List'], {
                     return true;
 
                 var distance = attackPlanet.pos.getDistance(this.pos),
-                    //супер формула
+                //супер формула
                     t = this.countUnits * 20 + distance + this.level * 10 + this.productivity * 10;
 
                 if (target && t < minT) {
@@ -121,7 +121,7 @@ Mix.define('AI', ['List'], {
         var me = this;
         this.game.comps.each(function () {
             var comp = this;
-            if (Math.random() > 0.9) return true;//смелость при атаке
+            if (Math.random() > 0.7) return true;//смелость при атаке
             if (me.selectForwards(comp)) {
                 var targetsPlanet = me.getTargets(comp);
 //               targetsPlanet.each(function(){

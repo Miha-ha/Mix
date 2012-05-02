@@ -1,4 +1,4 @@
-Mix.define('Unit', {
+Mix.define('Unit', ['List'], {
     extend:'Entity',
     length:30,
     speed:0.7,
@@ -16,9 +16,42 @@ Mix.define('Unit', {
         var l = this.pos.getDistance(to.pos, false);//Math.sqrt(tvx * tvx + tvy * tvy);
         this.vel.x = (this.speed * tvx / l);
         this.vel.y = (this.speed * tvy / l);
+
+        //init boids
+        this.boids = new List();
+        var Boid = function (x, y, vx, vy) {
+            this.x = x;
+            this.y = y;
+            this.vx = vx;
+            this.vy = vy;
+        };
+
+        for (var i = 0; i < count; ++i) {
+            this.boids.add(i, new Boid(from.pos.x + this.game.rnd(-from.r, from.r), from.pos.y + this.game.rnd(-from.r, from.r), this.vel.x, this.vel.y));
+        }
     },
     update:function () {
         if (!this._super()) return false;
+
+        var me = this;
+
+        this.boids.each(function () {
+            var tvx = me.to.pos.x - this.x;
+            var tvy = me.to.pos.y - this.y;
+            var l = Math.sqrt(tvx * tvx + tvy * tvy);
+            if (l < 100) {
+                this.vx = me.speed * tvx / l;
+                this.vy = me.speed * tvy / l;
+            } else {
+                this.vx = me.vel.x;
+                this.vy = me.vel.y;
+            }
+            this.vx += 2 * ( Math.random() - 0.5 ) / 5;
+            this.vy += 2 * ( Math.random() - 0.5 ) / 5;
+
+            this.x += this.vx;
+            this.y += this.vy;
+        });
 
         //если юниты долетели, то начинаем бой
         if (this.pos.getDistance(this.to.pos, true) < this.to.r * this.to.r) {
@@ -30,6 +63,7 @@ Mix.define('Unit', {
             }
             this.kill();
         }
+
         return true;
     },
     war:function () {
@@ -60,28 +94,16 @@ Mix.define('Unit', {
         this.to.countUnits += this.length;
     },
     render:function () {
-        var x = (this.pos.x + 0.5) | 0,
-            y = (this.pos.y + 0.5) | 0,
-            r = 8,
-            ctx = this.game.ctx;
-
-        //ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.strokeStyle = '#000000';
-        ctx.fillStyle = '#000000';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.length, x, y);
-
-        ctx.fillStyle = this.color;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.id, x + r, y + r);
+        var r = 8;
+        /*
+         Draw.circle(this.pos, r, this.color);
+         Draw.text(this.pos, this.length, '#000000');
+         Draw.text(this.pos.addScalar(r), this.id, this.color, 'left');
+         */
+        var me = this;
+        this.boids.each(function () {
+            Draw.rect(this.x, this.y, 2, 2, me.color);
+        });
     }
 
 

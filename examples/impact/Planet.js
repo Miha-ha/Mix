@@ -1,12 +1,5 @@
-Mix.define('Planet', ['List', 'Unit'], {
+Mix.define('Planet', ['List', 'Unit', 'Draw'], {
     extend:'Entity',
-    productivity:1, //продуктивность планеты: кол-во секунд через которое рождается один юнит
-    countUnits:0, //текущее количество юнитов на планете
-    maxUnits:50, //максимальное кол-во юнитов
-    owner:null, //владелец планеты - объект класса Player
-    level:1,
-    maxLevel:5,
-    targets:new List(),
     static_skills:{
         1:{maxUnits:10, productivity:3, upgradeTime:3},
         2:{maxUnits:20, productivity:2, upgradeTime:3},
@@ -14,7 +7,24 @@ Mix.define('Planet', ['List', 'Unit'], {
         4:{maxUnits:40, productivity:1, upgradeTime:3},
         5:{maxUnits:50, productivity:1, upgradeTime:0}
     },
+    static_states:{
+        normal:0,
+        upgrade:1,
+        war:2
+    },
+    state:0,
+    productivity:1, //продуктивность планеты: кол-во секунд через которое рождается один юнит
+    countUnits:0, //текущее количество юнитов на планете
+    maxUnits:50, //максимальное кол-во юнитов
+    owner:null, //владелец планеты - объект класса Player
+    changeStateDuration:5000,
+    changeStateStart:0,
+    level:1,
+    maxLevel:5,
+    targets:new List(),
     init:function (x, y, game) {
+        x = (x + 0.5) | 0;
+        y = (y + 0.5) | 0;
         this._super(x, y, game);
         this.color = 'gray';
         this.r = 20;
@@ -22,9 +32,18 @@ Mix.define('Planet', ['List', 'Unit'], {
         this.maxUnits = Planet.skills[this.level].maxUnits;//game.rnd(10, 20);
         this.productivity = Planet.skills[this.level].productivity;//game.rnd(1, 3);
         this.countUnits = game.rnd(1, this.maxUnits / 3);
+        this.posUpgrade = new Vector(this.pos.x + this.r, this.pos.y - this.r);
+        this.posLevel = new Vector(this.pos.x - this.r, this.pos.y - this.r);
         this.game.map.add(this);
         //console.log('countUnits: ' + this.countUnits + ', productivity: ' + this.productivity);
         this.restartTimerProductivity(false);
+
+        //debug
+        //this.changeState(Planet.states.upgrade);
+    },
+    changeState:function (state) {
+        this.state = state;
+        this.changeStateStart = new Date().getTime();
     },
     send:function () {
         var me = this;
@@ -62,12 +81,8 @@ Mix.define('Planet', ['List', 'Unit'], {
     },
     update:function () {
     },
-    drawLevel:function (ctx) {
-//        ctx.strokeStyle = '#FFFFFF';
-        ctx.fillStyle = '#FFFFFF';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.level, this.pos.x - this.r, this.pos.y - this.r);
+    drawLevel:function () {
+        Draw.text(this.posLevel, this.level, '#FFFFFF');
     },
     upgrade:function () {
         if (this.level < this.maxLevel) {
@@ -75,48 +90,55 @@ Mix.define('Planet', ['List', 'Unit'], {
             this.maxUnits = Planet.skills[this.level].maxUnits;//game.rnd(10, 20);
             this.productivity = Planet.skills[this.level].productivity;//game.rnd(1, 3);
             this.restartTimerProductivity(false);
+            this.changeState(Planet.states.normal);
         }
     },
-    drawUpgrade:function (ctx) {
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.pos.x + this.r, this.pos.y - this.r, 5, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
+    drawUpgrade:function () {
+        Draw.circle(this.posUpgrade, 5, this.color);
+    },
+    drawUpgradeProcess:function () {
+        var now = new Date().getTime(),
+            pi2 = Math.PI * 2,
+            p = (now - this.changeStateStart) * pi2 / this.changeStateDuration;
+        if (this.changeStateStart + this.changeStateDuration <= now) {
+            this.upgrade();
+        }
+
+        Draw.arc(this.pos, this.r + 5, '#00FF00', 5, 0, p);
+
     },
     render:function () {
-        var x = (this.pos.x + 0.5) | 0,
-            y = (this.pos.y + 0.5) | 0,
-            ctx = this.game.ctx;
-
         if (this.isSelect) {
-            ctx.lineWidth = 10;
-            ctx.strokeStyle = '#0000FF';
-            ctx.beginPath();
-            ctx.arc(x, y, this.r * 1.2, 0, Math.PI * 2, true);
-            ctx.closePath();
-            ctx.stroke();
+            Draw.arc(this.pos, this.r + 5, '#0000FF', 10);
         }
 
+        if (this.owner) {
+            var me = this,
+                planets = this.game.map.selectAround(this.pos.x, this.pos.y, 3, Game.entityType.planet);
+            planets.each(function () {
+                if (this.owner == me.owner) {
+                    var ctx = Game.context;
+                    ctx.lineWidth = 0.1;
+                    ctx.strokeStyle = this.color;
+                    ctx.beginPath();
+                    ctx.moveTo(me.pos.x, me.pos.y);
+                    ctx.lineTo(this.pos.x, this.pos.y);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            });
+        }
 
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(x, y, this.r, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
+        Draw.circle(this.pos, this.r, this.color);
+        Draw.text(this.pos, this.countUnits, '#000000', 'center');
 
-        ctx.strokeStyle = '#000000';
-        ctx.fillStyle = '#000000';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.countUnits, x, y);
-
-        this.drawLevel(ctx);
-        //this.drawUpgrade(ctx);
+        this.drawLevel();
+        //this.drawUpgrade();
+        switch (this.state) {
+            case Planet.states.upgrade:
+                this.drawUpgradeProcess();
+                break;
+        }
     },
     onMouseClick:function (e) {
     },
