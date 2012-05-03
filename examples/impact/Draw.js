@@ -4,7 +4,9 @@ Mix.define('Draw', ['Vector'], {
         ctx.lineWidth = 1;
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
+        ctx.beginPath();
         ctx.fillRect(x, y, width, height);
+        ctx.closePath();
         ctx.fill();
     },
 

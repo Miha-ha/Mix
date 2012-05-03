@@ -110,23 +110,38 @@ Mix.define('AI', ['List'], {
             var planet = this,
                 u = Math.floor(planet.maxUnits / 3);
 
-            if (planet.owner == player && planet.countUnits >= u) {
+            if (planet.owner == player && planet.countUnits >= u && planet.state == Planet.states.normal) {
                 player.selectPlanet(planet, true);
                 ok = true;
             }
         });
         return ok;
     },
+
+    upgradePlanets:function (player) {
+        this.game.planets.each(function (index) {
+            var planet = this;
+
+            if (planet.owner == player && planet.countUnits >= planet.maxUnits && planet.state == Planet.states.normal && planet.level < planet.maxLevel) {
+                planet.changeState(Planet.states.upgrade);
+            }
+        });
+    },
+
     process:function () {
         var me = this;
         this.game.comps.each(function () {
             var comp = this;
-            if (Math.random() > 0.7) return true;//смелость при атаке
-            if (me.selectForwards(comp)) {
-                var targetsPlanet = me.getTargets(comp);
+            if (Math.random() > 0.5) {
+                me.upgradePlanets(comp);
+            }
+            if (Math.random() > 0.5) {
+                if (me.selectForwards(comp)) {
+                    var targetsPlanet = me.getTargets(comp);
 //               targetsPlanet.each(function(){
 //                    comp.sendTo(this);
 //                });
+                }
             }
         });
     }

@@ -39,7 +39,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.comps.add(1, new Player('COMP', this));
         this.comps.add(2, new Player('COMP', this));
         //создаю планеты и распределяю планеты
-        this.countPlanets = this.rnd(10, 20);
+        this.countPlanets = this.rnd(15, 20);
         for (var i = this.countPlanets; i > -1; --i) {
             var x, y;
             for (var j = 0; j < 20; ++j) {
@@ -47,7 +47,6 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
                 y = this.rnd(50, this.canvasHeight - 50);
                 //проверка: не пересекается ли планета с другими
                 var planets = this.map.selectAround(x, y, 1, Game.entityType.planet);
-                console.log(planets.length);
                 var ok = true;
                 planets.each(function (index) {
                     var dx = this.pos.x - x,
@@ -68,17 +67,17 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
 
         //распределяю планеты по игрокам
         this.entities.get(0).setOwner(this.human);
-        this.entities.get(0).maxUnits = 50;
-        this.entities.get(0).countUnits = 40;
+//        this.entities.get(0).maxUnits = 10;
+        this.entities.get(0).countUnits = 10;
         this.entities.get(1).setOwner(this.comps.get(0));
-        this.entities.get(1).maxUnits = 50;
-        this.entities.get(1).countUnits = 40;
+//        this.entities.get(1).maxUnits = 50;
+        this.entities.get(1).countUnits = 10;
         this.entities.get(2).setOwner(this.comps.get(1));
-        this.entities.get(2).maxUnits = 50;
-        this.entities.get(2).countUnits = 40;
+//        this.entities.get(2).maxUnits = 50;
+        this.entities.get(2).countUnits = 10;
         this.entities.get(3).setOwner(this.comps.get(2));
-        this.entities.get(3).maxUnits = 50;
-        this.entities.get(3).countUnits = 40;
+//        this.entities.get(3).maxUnits = 50;
+        this.entities.get(3).countUnits = 10;
 
     },
     initEvents:function () {
@@ -119,9 +118,6 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         me.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         me.entities.each(function (index) {
-            if (this.debug) {
-                //TODO: добавить отрисовку доступных планет
-            }
             this.render();
             this.update();
             if (this.isKilled) {

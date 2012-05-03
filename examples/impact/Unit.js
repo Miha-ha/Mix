@@ -39,15 +39,15 @@ Mix.define('Unit', ['List'], {
             var tvx = me.to.pos.x - this.x;
             var tvy = me.to.pos.y - this.y;
             var l = Math.sqrt(tvx * tvx + tvy * tvy);
-            if (l < 100) {
+            if (l < me.to.r * 3) {
                 this.vx = me.speed * tvx / l;
                 this.vy = me.speed * tvy / l;
             } else {
                 this.vx = me.vel.x;
                 this.vy = me.vel.y;
             }
-            this.vx += 2 * ( Math.random() - 0.5 ) / 5;
-            this.vy += 2 * ( Math.random() - 0.5 ) / 5;
+            this.vx += 2 * ( Math.random() - 0.5 ) / 7;
+            this.vy += 2 * ( Math.random() - 0.5 ) / 7;
 
             this.x += this.vx;
             this.y += this.vy;
@@ -103,6 +103,7 @@ Mix.define('Unit', ['List'], {
         var me = this;
         this.boids.each(function () {
             Draw.rect(this.x, this.y, 2, 2, me.color);
+            //return true;
         });
     }
 

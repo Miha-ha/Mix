@@ -12,6 +12,7 @@ Mix.define('Map', ['List'], {
     },
     render:function () {
         var ctx = this.game.ctx;
+        ctx.lineWidth = 0.5;
         ctx.strokeStyle = "gray";
         //подсветить мышку
         /*
@@ -34,22 +35,17 @@ Mix.define('Map', ['List'], {
             ctx.lineTo(this.game.canvasWidth, curPos);
         }
 
-        ctx.strokeStyle = "gray";
-        ctx.stroke();
+        //ctx.strokeStyle = "gray";
         ctx.closePath();
+        ctx.stroke();
+
 
         for (var i = 0; i < this.ch; ++i)
             for (var j = 0; j < this.cw; ++j) {
                 var index = j + this.cw * i;
-//                ctx.strokeStyle = 'gray';
-                ctx.fillStyle = 'gray';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(this.map.get(index).length, j * this.sw + 5, i * this.sh + 5);
+                Draw.text(new Vector(j * this.sw + 5, i * this.sh + 5), this.map.get(index).length, 'gray', 'left');
             }
-//        this.map.each(function(index){
-//
-//        });
+
     },
     selectAround:function (x, y, radius, type) {
         radius = radius || 1;

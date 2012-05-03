@@ -41,9 +41,19 @@ Mix.define('Planet', ['List', 'Unit', 'Draw'], {
         //debug
         //this.changeState(Planet.states.upgrade);
     },
+    setLevel:function (level) {
+        this.level = level;
+        this.maxUnits = Planet.skills[this.level].maxUnits;//game.rnd(10, 20);
+        this.productivity = Planet.skills[this.level].productivity;//game.rnd(1, 3);
+        this.restartTimerProductivity(false);
+    },
     changeState:function (state) {
+        if (state == Planet.states.upgrade)
+            this.countUnits = Math.floor(this.countUnits / 2);
+
         this.state = state;
         this.changeStateStart = new Date().getTime();
+
     },
     send:function () {
         var me = this;
@@ -71,6 +81,7 @@ Mix.define('Planet', ['List', 'Unit', 'Draw'], {
         this.owner = player;
         this.color = player.color;
         this.select(false);
+        this.setLevel(1);
     },
     produce:function () {
 //        if (!this.owner) return;
@@ -86,10 +97,7 @@ Mix.define('Planet', ['List', 'Unit', 'Draw'], {
     },
     upgrade:function () {
         if (this.level < this.maxLevel) {
-            this.level++;
-            this.maxUnits = Planet.skills[this.level].maxUnits;//game.rnd(10, 20);
-            this.productivity = Planet.skills[this.level].productivity;//game.rnd(1, 3);
-            this.restartTimerProductivity(false);
+            this.setLevel(this.level + 1);
             this.changeState(Planet.states.normal);
         }
     },
