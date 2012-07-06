@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mix chain example</title>
+    <style type="text/css">
+        body {
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+<script src="../../mix.js"></script>
+<script>
+
+    Mix.config({
+        synchronous:true,
+        prefixPath:'',
+        nocache:false
+    }).module({
+                name:'main',
+                requires:['Chain'],
+                body:function () {
+
+                    var start,
+                            chain = new Chain()
+                                    .execute(function () {
+                                        console.log('Жду 1 секунду...');
+                                        start = new Date().getTime();
+                                    })
+                                    .delay(1000)
+                                    .execute(function () {
+                                        console.log('Прошло: ' + (new Date().getTime() - start) / 1000 + 'с. Жду 3 секунды...');
+                                        start = new Date().getTime();
+                                    })
+                                    .delay(3000)
+                                    .execute(function () {
+                                        console.log('Прошло: ' + (new Date().getTime() - start) / 1000 + 'с.');
+                                    });
+
+                    setInterval(chain.update.bind(chain), 1000 / 30);
+                }
+
+            });
+</script>
+</body>
+</html>
