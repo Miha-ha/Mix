@@ -39,7 +39,7 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
         this.comps.add(1, new Player('COMP', this));
         this.comps.add(2, new Player('COMP', this));
         //создаю планеты и распределяю планеты
-        this.countPlanets = this.rnd(15, 20);
+        this.countPlanets = this.rnd(25, 40);
         for (var i = this.countPlanets; i > -1; --i) {
             var x, y;
             for (var j = 0; j < 20; ++j) {
@@ -67,14 +67,14 @@ Mix.define('Game', ['stats', 'Planet', 'Player', 'AI', 'List', 'Map'], {
 
         //распределяю планеты по игрокам
         this.entities.get(0).setOwner(this.human);
-//        this.entities.get(0).maxUnits = 10;
-        this.entities.get(0).countUnits = 10;
+        this.entities.get(0).countUnits = 20;
+        this.entities.get(0).setLevel(2);
         this.entities.get(1).setOwner(this.comps.get(0));
-//        this.entities.get(1).maxUnits = 50;
-        this.entities.get(1).countUnits = 10;
+        this.entities.get(1).countUnits = 30;
+        this.entities.get(1).setLevel(3);
         this.entities.get(2).setOwner(this.comps.get(1));
-//        this.entities.get(2).maxUnits = 50;
-        this.entities.get(2).countUnits = 10;
+        this.entities.get(2).countUnits = 30;
+        this.entities.get(2).setLevel(3);
         this.entities.get(3).setOwner(this.comps.get(2));
 //        this.entities.get(3).maxUnits = 50;
         this.entities.get(3).countUnits = 10;

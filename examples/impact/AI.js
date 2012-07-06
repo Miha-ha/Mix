@@ -132,10 +132,10 @@ Mix.define('AI', ['List'], {
         var me = this;
         this.game.comps.each(function () {
             var comp = this;
-            if (Math.random() > 0.5) {
+            if (Math.random() > 0.6) {
                 me.upgradePlanets(comp);
             }
-            if (Math.random() > 0.5) {
+            if (Math.random() > 0.2) {
                 if (me.selectForwards(comp)) {
                     var targetsPlanet = me.getTargets(comp);
 //               targetsPlanet.each(function(){
