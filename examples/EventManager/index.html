@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mix event manager example</title>
+    <style type="text/css">
+        body {
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+<script src="../../mix.js"></script>
+<script>
+
+    Mix.config({
+        synchronous:true,
+        prefixPath:'',
+        nocache:false
+    }).module({
+                name:'main',
+                requires:['EventManager', 'Ping', 'Pong'],
+                body:function () {
+                    var eventManager = new EventManager(),
+                            ping = new Ping(eventManager),
+                            pong = new Pong(eventManager);
+
+                    ping.send();
+                }
+
+            });
+</script>
+</body>
+</html>
