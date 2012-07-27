@@ -18,10 +18,13 @@
 
     Mix.config({
         synchronous: true,
-        nocache: false
+        nocache: false,
+        path: {
+            common: '../../common'
+        }
     }).module({
                 name: 'main',
-                requires: ['Chain'],
+                requires: ['common:Chain'],
                 body: function (){
 
                     var start,

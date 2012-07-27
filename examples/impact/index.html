@@ -29,10 +29,13 @@
 
     Mix.config({
         synchronous: true,
-        nocache: false
+        nocache: false,
+        path: {
+            common: '../../common'
+        }
     }).module({
                 name: 'main',
-                requires: ['Game', 'Vector', 'List', 'stats'],
+                requires: ['Game', 'Vector', 'common:List', 'common:stats'],
                 body: function (){
                     var game = new Game();
                     game.run();
