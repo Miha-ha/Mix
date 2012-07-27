@@ -25,7 +25,9 @@
 
     Mix.config({
         synchronous: true,
-        prefixPath: '',
+        path: {
+            common: '../../common'
+        },
         nocache: false
     }).module({
                 name: 'main',

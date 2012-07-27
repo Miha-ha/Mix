@@ -160,7 +160,7 @@
         loadScript: function (name, requiredFrom, pathName){
             var prefix = '';
             if (pathName) {
-                prefix = this.path[pathName];
+                if (!(prefix = this.path[pathName])) throw('Undefined path: ' + pathName);
                 prefix += prefix.indexOf(prefix.length - 1) == '/' ? '' : '/';
             }
             var url = prefix + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');

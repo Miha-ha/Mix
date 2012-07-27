@@ -1,4 +1,4 @@
-Mix.define('Sprite', ['SpriteSheet', 'Chain'], {
+Mix.define('Sprite', ['SpriteSheet', 'common:Chain'], {
     sheet: null,
     timer: null,
     chain: null,
@@ -21,7 +21,7 @@ Mix.define('Sprite', ['SpriteSheet', 'Chain'], {
         if (!(sequence instanceof Array)) {
             var countFrames = sequence;
             sequence = [];
-            for (var i = 0, l = countFrames; i < l; ++i)
+            for (var i = 0; i < countFrames; ++i)
                 sequence.push(i);
 
         }

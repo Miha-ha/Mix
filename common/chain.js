@@ -13,8 +13,6 @@ Mix.define('Chain', {
     nextNode: function (){
         if (this.loop) {
             this.curNodeIndex = (this.curNodeIndex + 1) % this.nodes.length;
-//            if(this.curNodeIndex === 0) this.start = new Date().getTime();
-//            console.log('curNodeIndex: '+ this.curNodeIndex);
         } else {
             this.nodes.shift();
         }
