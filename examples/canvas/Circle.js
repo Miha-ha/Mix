@@ -1,5 +1,5 @@
 Mix.define('Circle', {
-    init:function (x, y, r, main) {
+    init: function (x, y, r, main){
         var ctx = main.ctx;
         this.main = main;
 
@@ -7,11 +7,14 @@ Mix.define('Circle', {
         this.y = y || 0;
         this.r = r || 10;
 
+        this.dx = (main.rnd(-3, 3) || 1) / 1;
+        this.dy = (main.rnd(-3, 3) || 1) / 1;
+
 
         this.color = 'rgba(' + main.rnd(0, 255) + ',' + main.rnd(0, 255) + ',' + main.rnd(0, 255) + ', 255)';
 
     },
-    update:function () {
+    update: function (){
         var width = this.main.canvas.width,
             height = this.main.canvas.height;
 
@@ -34,7 +37,7 @@ Mix.define('Circle', {
             this.dy *= -1;
         }
     },
-    render:function () {
+    render: function (){
         var x = (this.x + 0.5) | 0,
             y = (this.y + 0.5) | 0,
             r = this.r,

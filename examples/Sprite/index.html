@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mix canvas example</title>
+    <title>Mix sprite example</title>
     <style type="text/css">
         body {
             background: #000000;
@@ -29,11 +29,11 @@
         nocache: false
     }).module({
                 name: 'main',
-                requires: ['Circles', 'stats'],
+                requires: ['Game', 'stats'],
                 body: function (){
 
-                    var circles = new Circles(1000);
-                    circles.runFixStep();
+                    var game = new Game();
+                    game.run();
 
                     if (typeof Stats == 'function') {
                         //clearInterval(interval);
