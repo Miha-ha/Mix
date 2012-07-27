@@ -24,13 +24,12 @@
 <script>
 
     Mix.config({
-        synchronous:true,
-        prefixPath:'',
-        nocache:false
+        synchronous: true,
+        nocache: false
     }).module({
-                name:'main',
-                requires:['Physics', 'stats'],
-                body:function () {
+                name: 'main',
+                requires: ['Physics', 'stats'],
+                body: function (){
 
                     var physics = new Physics(300);
                     physics.run();
@@ -42,7 +41,7 @@
                         stats.domElement.style.left = '0px';
                         stats.domElement.style.top = '0px';
                         document.body.appendChild(stats.domElement);
-                        setInterval(function () {
+                        setInterval(function (){
                             stats.update();
                         }, 1000 / 60);
 

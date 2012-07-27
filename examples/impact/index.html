@@ -28,13 +28,12 @@
 <script>
 
     Mix.config({
-        synchronous:true,
-        prefixPath:'',
-        nocache:false
+        synchronous: true,
+        nocache: false
     }).module({
-                name:'main',
-                requires:['Game', 'Vector', 'List', 'stats'],
-                body:function () {
+                name: 'main',
+                requires: ['Game', 'Vector', 'List', 'stats'],
+                body: function (){
                     var game = new Game();
                     game.run();
                 }

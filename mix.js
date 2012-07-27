@@ -1,17 +1,17 @@
 //TODO: добавить namespace
-(function () {
+(function (){
     Mix = {
         //------------config----------
-        nocache:false,
-        prefixPath:'',
-        synchronous:false,
+        nocache: false,
+        path: {},
+        synchronous: false,
         //----------private members---------
-        _count:0,
-        _loadingCount:0,
-        _modules:{},
-        _download:[],
+        _count: 0,
+        _loadingCount: 0,
+        _modules: {},
+        _download: [],
         //----------public functions--------
-        namespace:function (namespaces) {
+        namespace: function (namespaces){
             var ns = namespaces.split('.'),
                 current = namespaces.length > 0 ? window[ns[0]] : window;
 
@@ -24,14 +24,14 @@
             }
             return current;
         },
-        getClassName:function (classPath) {
+        getClassName: function (classPath){
             var path = classPath.split('.');
             return path[path.length - 1];
         },
-        $:function (selector) {
+        $: function (selector){
             return selector.charAt(0) == '#' ? document.getElementById(selector.substr(1)) : document.getElementsByTagName(selector);
         },
-        apply:function (o, c, defaults) {
+        apply: function (o, c, defaults){
             // no "this" reference for friendly out of scope calls
             if (defaults) {
                 Mix.apply(o, defaults);
@@ -43,10 +43,10 @@
             }
             return o;
         },
-        config:function (config) {
+        config: function (config){
             return this.apply(this, config);
         },
-        define:function () {
+        define: function (){
             var classPath = '',
                 requires = [],
                 config = {};
@@ -78,9 +78,9 @@
             }
 
             Mix.module({
-                name:classPath,
-                requires:requires,
-                body:function () {
+                name: classPath,
+                requires: requires,
+                body: function (){
                     var parent = parentClassNamespace && parentClassNamespace[parentClassName] || Mix.Class,
                         newClass = parent.create(config);
 
@@ -96,7 +96,7 @@
                 }
             });
         },
-        module:function (config) {
+        module: function (config){
             config.loaded = false;
             this._modules[config.name] = config;
             this._download.push(config);
@@ -104,18 +104,28 @@
             //TODO: подписаться на событие onReady
             this.process();
         },
-        process:function () {
+        process: function (){
             var modulesLoaded = false;
             for (var i = 0; i < this._download.length; ++i) {
                 var m = this._download[i];
                 m.requires = m.requires || [];
                 var requiresLoaded = true;
                 for (var r = 0; r < m.requires.length; ++r) {
-                    var req = m.requires[r];
+                    var req = m.requires[r],
+                        parts = req.split(':'),
+                        prefix = '';
+
+                    if (parts.length == 2) {
+                        prefix = parts[0];
+                        req = parts[1];
+                    } else if (parts.length == 0 || parts.length > 2) {
+                        throw('Incorrect name: ' + req);
+                    }
+
 
                     if (!this._modules[req]) {
                         requiresLoaded = false;
-                        this.loadScript(req, m.name);
+                        this.loadScript(req, m.name, prefix);
                     } else if (!this._modules[req].loaded) {
                         requiresLoaded = false;
                     }
@@ -142,38 +152,43 @@
                 throw ('Unresolved (circular?) dependencies: ' + unresolved.join(', '));
             }
         },
-        onProgress:function (count, val) {
+        onProgress: function (count, val){
             if (count <= 0) return;
             var p = val * 100 / count;
             //console.log('progress: ' + Math.round(p) + '%');//debug
         },
-        loadScript:function (name, requiredFrom) {
-            var url = this.prefixPath + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');
+        loadScript: function (name, requiredFrom, pathName){
+            var prefix = '';
+            if (pathName) {
+                prefix = this.path[pathName];
+                prefix += prefix.indexOf(prefix.length - 1) == '/' ? '' : '/';
+            }
+            var url = prefix + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');
             this._modules[name] = {
-                name:name,
-                requires:[],
-                loaded:false,
-                body:null
+                name: name,
+                requires: [],
+                loaded: false,
+                body: null
             };
 
             this._loadingCount++;
             if (this.synchronous) {
-                this.injectScript(url, function () {
+                this.injectScript(url, function (){
                     this._loadingCount--;
                     this.process();
-                }, function () {
+                }, function (){
                     throw ('Failed to load module ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
                 }, this)
             } else {
-                this.loadXHRScript(url, function () {
+                this.loadXHRScript(url, function (){
                     this._loadingCount--;
                     this.process();
-                }, function () {
+                }, function (){
                     throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
                 }, this)
             }
         },
-        loadXHRScript:function (url, onLoad, onError, scope) {
+        loadXHRScript: function (url, onLoad, onError, scope){
             var isCrossOriginRestricted = false,
                 fileName = url.split('/').pop(),
                 xhr, status;
@@ -221,14 +236,14 @@
             xhr = null;
 
         },
-        injectScript:function (url, onLoad, onError, scope) {
+        injectScript: function (url, onLoad, onError, scope){
             var script = document.createElement('script'),
                 me = this,
-                onLoadFn = function () {
+                onLoadFn = function (){
                     me.cleanupScriptElement(script);
                     onLoad.call(scope);
                 },
-                onErrorFn = function () {
+                onErrorFn = function (){
                     me.cleanupScriptElement(script);
                     onError.call(scope);
                 };
@@ -237,7 +252,7 @@
             script.src = url;
             script.onload = onLoadFn;
             script.onerror = onErrorFn;
-            script.onreadystatechange = function () {
+            script.onreadystatechange = function (){
                 if (this.readyState === 'loaded' || this.readyState === 'complete') {
                     onLoadFn();
                 }
@@ -247,7 +262,7 @@
 
             return script;
         },
-        cleanupScriptElement:function (script) {
+        cleanupScriptElement: function (script){
             script.onload = null;
             script.onreadystatechange = null;
             script.onerror = null;
@@ -256,15 +271,15 @@
 
     };
 
-    var initializing = false, fnTest = /xyz/.test(function () {
+    var initializing = false, fnTest = /xyz/.test(function (){
         xyz;
     }) ? /\b_super\b/ : /.*/;
     // The base Class implementation (does nothing)
-    Mix.Class = function () {
+    Mix.Class = function (){
     };
 
     // Create a new Class that inherits from this class
-    Mix.Class.create = function (prop) {
+    Mix.Class.create = function (prop){
         var _super = this.prototype;
 
         // Instantiate a base class (but only create the instance,
@@ -278,8 +293,8 @@
             // Check if we're overwriting an existing function
             prototype[name] = typeof prop[name] == "function" &&
                 typeof _super[name] == "function" && fnTest.test(prop[name]) ?
-                (function (name, fn) {
-                    return function () {
+                (function (name, fn){
+                    return function (){
                         var tmp = this._super;
 
                         // Add a new ._super() method that is the same method
@@ -298,7 +313,7 @@
         }
 
         // The dummy class constructor
-        function Class() {
+        function Class(){
             // All construction is actually done in the init method
             if (!initializing && this.init)
                 this.init.apply(this, arguments);
@@ -316,10 +331,10 @@
         return Class;
     };
 
-    Function.prototype.bind = function (scope) {
+    Function.prototype.bind = function (scope){
         var _function = this;
 
-        return function () {
+        return function (){
             return _function.apply(scope, arguments);
         }
     }

@@ -41,11 +41,13 @@ Mix.define('Mathematics.Geometry.Point', {
 <script>
     Mix.config({
         synchronous:true,
-        prefixPath:'',
+        path:{
+            common: '../../common'
+        },
         nocache:false
     }).module({
                 name:'main',
-                requires:['Mathematics.Geometry.Point'],
+                requires:['common:Mathematics.Geometry.Point'],
                 body:function () {
                     var p = new Mathematics.Geometry.Point(10, 20);
                     alert(p);
@@ -54,3 +56,8 @@ Mix.define('Mathematics.Geometry.Point', {
 </script>
 </body>
 </html>
+
+Path в настройках сожержит именнованные пути для альтернативной загрузки модулей/классов.
+При подключении достаточно указать имя пути отделив его от имений класса/модуля двоеточием.
+В примере выше url для загрузки класса будет такой: ../../common/Mathematics/Geometry/Point.js
+

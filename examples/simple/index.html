@@ -9,13 +9,12 @@
 <script src="../../mix.js"></script>
 <script>
     Mix.config({
-        synchronous:true,
-        prefixPath:'',
-        nocache:true
+        synchronous: true,
+        nocache: true
     }).module({
-                name:'main',
-                requires:['m2', 'm3', 'utils.m5'],
-                body:function () {
+                name: 'main',
+                requires: ['m2', 'm3', 'utils.m5'],
+                body: function (){
                     console.log('main');
                 }
             });
