@@ -3,7 +3,7 @@
     Mix = {
         //------------config----------
         nocache:false,
-        prefixPath:'',
+        path:{},
         synchronous:false,
         //----------private members---------
         _count:0,
@@ -111,11 +111,21 @@
                 m.requires = m.requires || [];
                 var requiresLoaded = true;
                 for (var r = 0; r < m.requires.length; ++r) {
-                    var req = m.requires[r];
+                    var req = m.requires[r],
+                        parts = req.split(':'),
+                        prefix='';
+
+                    if(parts.length==2){
+                        prefix = parts[0];
+                        req = parts[1];
+                    }else if(parts.length ==0 || parts.length > 2){
+                        throw('Incorrect name: ' + req);
+                    }
+
 
                     if (!this._modules[req]) {
                         requiresLoaded = false;
-                        this.loadScript(req, m.name);
+                        this.loadScript(req, m.name, prefix);
                     } else if (!this._modules[req].loaded) {
                         requiresLoaded = false;
                     }
@@ -147,8 +157,13 @@
             var p = val * 100 / count;
             //console.log('progress: ' + Math.round(p) + '%');//debug
         },
-        loadScript:function (name, requiredFrom) {
-            var url = this.prefixPath + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');
+        loadScript:function (name, requiredFrom, pathName) {
+            var prefix = '';
+            if(pathName){
+                prefix = this.path[pathName];
+                prefix += prefix.indexOf(prefix.length-1)=='/' ? '' : '/';
+            }
+            var url = prefix + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');
             this._modules[name] = {
                 name:name,
                 requires:[],

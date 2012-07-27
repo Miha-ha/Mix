@@ -18,11 +18,13 @@
 
     Mix.config({
         synchronous:true,
-        prefixPath:'',
-        nocache:false
+        nocache:false,
+        path:{
+            common: '../../common/'
+        }
     }).module({
                 name:'main',
-                requires:['EventManager', 'Ping', 'Pong'],
+                requires:['common:EventManager', 'Ping', 'Pong'],
                 body:function () {
                     var eventManager = new EventManager(),
                             ping = new Ping(eventManager),
