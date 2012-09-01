@@ -13,10 +13,6 @@
 
     </style>
 
-    <script type="text/javascript">
-
-    </script>
-
 </head>
 <body>
 <div id="stats"></div>
@@ -24,24 +20,6 @@
     <audio id="audioAttack" src="audio/attack.ogg" preload="auto"></audio>
 </div>
 <canvas id="Canvas2D">Упс!</canvas>
-<script src="../../mix.js"></script>
-<script>
-
-    Mix.config({
-        synchronous: true,
-        nocache: false,
-        path: {
-            common: '../../common'
-        }
-    }).module({
-                name: 'main',
-                requires: ['Game', 'Vector', 'common:List', 'common:stats'],
-                body: function (){
-                    var game = new Game();
-                    game.run();
-                }
-
-            });
-</script>
+<script data-main src="../../mix.js"></script>
 </body>
 </html>

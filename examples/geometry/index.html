@@ -6,19 +6,6 @@
 </head>
 <body>
 
-<script src="../../mix.js"></script>
-<script>
-    Mix.config({
-        synchronous: true,
-        nocache: false
-    }).module({
-                name: 'main',
-                requires: ['Mathematics.Geometry.Point'],
-                body: function (){
-                    var p = new Mathematics.Geometry.Point(10, 10);
-                    alert(p);
-                }
-            });
-</script>
+<script data-main src="../../mix.js"></script>
 </body>
 </html>

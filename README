@@ -37,25 +37,18 @@ Mix.define('Mathematics.Geometry.Point', {
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-<script src="../../mod.js"></script>
-<script>
-    Mix.config({
-        synchronous:true,
-        path:{
-            common: '../../common'
-        },
-        nocache:false
-    }).module({
-                name:'main',
-                requires:['common:Mathematics.Geometry.Point'],
-                body:function () {
-                    var p = new Mathematics.Geometry.Point(10, 20);
-                    alert(p);
-                }
-            });
-</script>
+<script data-main src="../../mod.js"></script>
 </body>
 </html>
+
+Аттрибут data-main определяет стартовый модуль/класс.
+Примеры:
+    data-main               - загрузит main.js
+    data-main="main"        - загрузит main.js
+    data-main="index"       - загрузит index.js
+    data-main="app.main"    - загрузит app/main.js
+
+
 
 Path в настройках сожержит именнованные пути для альтернативной загрузки модулей/классов.
 При подключении достаточно указать имя пути отделив его от имений класса/модуля двоеточием.

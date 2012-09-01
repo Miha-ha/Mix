@@ -1,6 +1,6 @@
 //TODO: добавить namespace
-(function (){
-    Mix = {
+(function (global){
+    global.Mix = {
         //------------config----------
         nocache: false,
         path: {},
@@ -11,6 +11,26 @@
         _modules: {},
         _download: [],
         //----------public functions--------
+        /**
+         * загрузка модуля из аттрибута data-main
+         */
+        init: function (){
+            var scripts = Mix.$('script'),
+                mainModule = null;
+
+            for (var i = 0, l = scripts.length; i < l; ++i) {
+                var dataMain = scripts[i].getAttribute('data-main');
+
+                if (dataMain != null) {
+                    mainModule = dataMain === '' ? 'main' : dataMain;
+                    break;
+                }
+
+            }
+
+            if (mainModule)
+                Mix.config({synchronous: true}).loadScript(mainModule, '');
+        },
         namespace: function (namespaces){
             var ns = namespaces.split('.'),
                 current = namespaces.length > 0 ? window[ns[0]] : window;
@@ -177,7 +197,7 @@
                     this._loadingCount--;
                     this.process();
                 }, function (){
-                    throw ('Failed to load module ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
+                    throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
                 }, this)
             } else {
                 this.loadXHRScript(url, function (){
@@ -212,15 +232,13 @@
                 isCrossOriginRestricted = (status === 0);
             }
 
-            if (isCrossOriginRestricted
-                ) {
+            if (isCrossOriginRestricted) {
                 onError.call(this, "Failed loading synchronously via XHR: '" + url + "'; It's likely that the file is either " +
                     "being loaded from a different domain or from the local file system whereby cross origin " +
                     "requests are not allowed due to security reasons. Use asynchronous loading with " +
                     "Ext.require instead.", this.synchronous);
             }
-            else if (status >= 200 && status < 300
-                ) {
+            else if (status >= 200 && status < 300) {
                 // Firebug friendly, file names are still shown even though they're eval'ed code
                 new Function(xhr.responseText + "\n//@ sourceURL=" + fileName)();
 
@@ -337,5 +355,8 @@
         return function (){
             return _function.apply(scope, arguments);
         }
-    }
-})();
+    };
+
+    Mix.init();
+
+})(this);
