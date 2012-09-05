@@ -191,17 +191,6 @@
                 } else if (!requireModule.loaded) {
                     load = false;
                 }
-//                load = this.loadModule(requireModule, module);
-//                if(load){
-//                    requireModule.loaded = true;
-//                    if (requireModule.body) requireModule.body();
-//                    this._loadingCountModules++;
-//
-//                    this._loadingModules[requireModule.name] = null;
-//                    delete this._loadingModules[requireModule.name];
-//
-//                    this.onProgress(this._countModules, this._loadingCountModules);
-//                }
             }
 
             //если еще не загружал
