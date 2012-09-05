@@ -1,4 +1,3 @@
-//TODO: добавить namespace
 (function (global){
     global.Mix = {
         //------------config----------
@@ -6,10 +5,11 @@
         path: {},
         synchronous: false,
         //----------private members---------
-        _count: 0,
-        _loadingCount: 0,
+        _countModules: 0,
+        _loadingCountModules: 0, //загруженные модули с зависимостями
+        _loadingCountScripts: 0, //загруженные скрипты на клиента
         _modules: {},
-        _download: [],
+        _loadingModules: {}, //загружаемые модули
         //----------public functions--------
         /**
          * загрузка модуля из аттрибута data-main
@@ -113,97 +113,185 @@
                         }
                     }
                     classNamespace[className] = newClass;
+                    console.log('class:', className);
                 }
             });
         },
         module: function (config){
             config.loaded = false;
-            this._modules[config.name] = config;
-            this._download.push(config);
-            this._count++;
+            config.scriptLoaded = true;
+
+            if (!this._modules[config.name]) {
+                this._countModules++;
+            }
+            this.apply(this._modules[config.name], config);
+
+            if (!this._loadingModules[config.name]) {
+                this._loadingCountModules++;
+            }
+            this.apply(this._loadingModules[config.name], config);
+
             //TODO: подписаться на событие onReady
             this.process();
         },
-        process: function (){
-            var modulesLoaded = false;
-            for (var i = 0; i < this._download.length; ++i) {
-                var m = this._download[i];
-                m.requires = m.requires || [];
-                var requiresLoaded = true;
-                for (var r = 0; r < m.requires.length; ++r) {
-                    var req = m.requires[r],
-                        parts = req.split(':'),
-                        prefix = '';
+        getModuleConfig: function (moduleData){
+            //TODO: отрефакторить!
+            var config;
 
-                    if (parts.length == 2) {
-                        prefix = parts[0];
-                        req = parts[1];
-                    } else if (parts.length == 0 || parts.length > 2) {
-                        throw('Incorrect name: ' + req);
+            function parseName(name){
+                var parts = name.split(':');
+                if (parts.length == 1) {
+                    return {
+                        name: name
+                    };
+                } else if (parts.length == 2) {
+                    return {
+                        pathName: parts[0],
+                        name: parts[1]
                     }
-
-
-                    if (!this._modules[req]) {
-                        requiresLoaded = false;
-                        this.loadScript(req, m.name, prefix);
-                    } else if (!this._modules[req].loaded) {
-                        requiresLoaded = false;
-                    }
-                }
-
-                if (requiresLoaded && m.body) {
-                    this._download.splice(i, 1);
-                    m.loaded = true;
-                    m.body();
-                    modulesLoaded = true;
-                    i--;
-
-                    this.onProgress(this._count, this._count - this._download.length);
+                } else {
+                    throw 'Module name is not correct!';
                 }
             }
 
-            if (modulesLoaded) {
-                this.process();
-            } else if (this._loadingCount == 0 && this._download.length != 0) {
+            if (typeof moduleData == "string") {
+
+                config = this._modules[parseName(moduleData).name];
+                if (!config) {
+                    config = {
+                        name: moduleData
+                    };
+                }
+            } else if (typeof moduleData == "object") {
+                config = this._modules[moduleData.name];
+                if (!config) {
+                    config = moduleData;
+                }
+            } else {
+                throw ("Module data is not correct!");
+            }
+
+            this.apply(config, parseName(config.name));
+
+            return config;
+        },
+        loadModule: function (module, requiredFrom){
+            if (module.loaded == true) return true;
+
+            var load = true,
+                requires = module.requires || [];
+
+            for (var i = 0, l = requires.length; i < l; ++i) {
+
+                var requireModule = this.getModuleConfig(requires[i]);
+                if (requireModule.loaded) continue;
+                if (!this._modules[requireModule.name]) {
+                    load = false;
+                    this.loadScript(requireModule.name, module.name, requireModule.pathName);
+                } else if (!requireModule.loaded) {
+                    load = false;
+                }
+//                load = this.loadModule(requireModule, module);
+//                if(load){
+//                    requireModule.loaded = true;
+//                    if (requireModule.body) requireModule.body();
+//                    this._loadingCountModules++;
+//
+//                    this._loadingModules[requireModule.name] = null;
+//                    delete this._loadingModules[requireModule.name];
+//
+//                    this.onProgress(this._countModules, this._loadingCountModules);
+//                }
+            }
+
+            //если еще не загружал
+            if (!this._modules[module.name]) {
+                load = false;
+                this.loadScript(module.name, requiredFrom.name, module.pathName);
+            }
+
+            return (load && module.scriptLoaded);
+        },
+        process: function (){
+            var moduleLoaded = false;
+            for (var k in this._loadingModules) {
+                if (!this._loadingModules.hasOwnProperty(k)) continue;
+                var module = this._loadingModules[k];
+                if (module.loaded) continue;
+
+                module.loaded = this.loadModule(module, module.requiredFrom);
+                if (module.loaded) {
+                    moduleLoaded = true;
+                    if (module.body) module.body();
+                    this._loadingCountModules++;
+
+                    this._loadingModules[module.name] = null;
+                    delete this._loadingModules[module.name];
+
+                    this.onProgress(this._countModules, this._loadingCountModules);
+                }
+            }
+
+            //если загружен хоть один модуль - запускаю проверку повторно
+            if (moduleLoaded) this.process();
+
+
+            if (this._loadingCountScripts == 0 &&
+                this._loadingCountModules < this._countModules) {
                 var unresolved = [];
-                for (i = 0; i < this._download.length; i++) {
-                    unresolved.push(this._download[i].name);
+                for (var i in this._loadingModules) {
+                    if (!this._loadingModules.hasOwnProperty(i)) continue;
+                    unresolved.push(this._loadingModules[i].name);
                 }
                 throw ('Unresolved (circular?) dependencies: ' + unresolved.join(', '));
             }
         },
         onProgress: function (count, val){
-            if (count <= 0) return;
-            var p = val * 100 / count;
-            //console.log('progress: ' + Math.round(p) + '%');//debug
+//            if (count <= 0) return;
+//            var p = val * 100 / count;
+//            console.log('progress: ' + Math.round(p) + '%');//debug
         },
         loadScript: function (name, requiredFrom, pathName){
-            var prefix = '';
+            var me = this,
+                prefix = '';
             if (pathName) {
                 if (!(prefix = this.path[pathName])) throw('Undefined path: ' + pathName);
                 prefix += prefix.indexOf(prefix.length - 1) == '/' ? '' : '/';
             }
             var url = prefix + name.replace(/\./g, '/') + '.js' + (this.nocache ? '?nocache=' + new Date().getTime() : '');
-            this._modules[name] = {
+
+            var config = {
                 name: name,
+                requiredFrom: requiredFrom,
+                pathName: pathName,
                 requires: [],
                 loaded: false,
+                scriptLoaded: false,
                 body: null
             };
+            if (!this._modules[name]) {
+                this._countModules++;
+                this._modules[name] = config;
+            }
 
-            this._loadingCount++;
+            if (!this._loadingModules[name]) {
+                this._loadingModules[name] = config;
+            }
+
+            function onLoad(){
+                me._modules[name].scriptLoaded = true;
+                me._loadingCountScripts--;
+                me.process();
+            }
+
+
+            this._loadingCountScripts++;
             if (this.synchronous) {
-                this.injectScript(url, function (){
-                    this._loadingCount--;
-                    this.process();
-                }, function (){
+                this.injectScript(url, onLoad, function (){
                     throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
                 }, this)
             } else {
-                this.loadXHRScript(url, function (){
-                    this._loadingCount--;
-                    this.process();
-                }, function (){
+                this.loadXHRScript(url, onLoad, function (){
                     throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
                 }, this)
             }
@@ -286,7 +374,6 @@
             script.onerror = null;
             return this;
         }
-
     };
 
     var initializing = false, fnTest = /xyz/.test(function (){

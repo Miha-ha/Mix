@@ -52,5 +52,21 @@ Mix.define('Mathematics.Geometry.Point', {
 
 Path в настройках сожержит именнованные пути для альтернативной загрузки модулей/классов.
 При подключении достаточно указать имя пути отделив его от имений класса/модуля двоеточием.
-В примере выше url для загрузки класса будет такой: ../../common/Mathematics/Geometry/Point.js
+Пример:
+Mix.config({
+     path: {
+            common: '../../common/'
+     }
+}).module({
+          name: 'main',
+          requires: ['common:EventManager', 'Ping', 'Pong'],
+          body: function (){
+              var eventManager = new EventManager(),
+                  ping = new Ping(eventManager),
+                  pong = new Pong(eventManager);
+
+              ping.send();
+          }
+});
+ url для загрузки класса EventManager будет такой: ../../common/EventManager.js
 
