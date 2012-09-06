@@ -119,7 +119,6 @@
         },
         module: function (config){
             config.loaded = false;
-            config.scriptLoaded = true;
 
             if (!this._modules[config.name]) {
                 this._countModules++;
@@ -175,6 +174,17 @@
 
             return config;
         },
+        checkCircular: function (requiredFrom, moduleName, chain){
+            chain = chain || [moduleName];
+            if (requiredFrom) {
+                chain.push(requiredFrom.name);
+                if (requiredFrom.name == moduleName) {
+                    throw  ('Unresolved (circular?) dependencies: ' + chain.join('->'));
+                } else {
+                    this.checkCircular(requiredFrom.requiredFrom, moduleName, chain);
+                }
+            }
+        },
         loadModule: function (module, requiredFrom){
             if (module.loaded == true) return true;
 
@@ -182,22 +192,23 @@
                 requires = module.requires || [];
 
             for (var i = 0, l = requires.length; i < l; ++i) {
-
                 var requireModule = this.getModuleConfig(requires[i]);
-                if (requireModule.loaded) continue;
-                if (!this._modules[requireModule.name]) {
+                if (!requireModule.requiredFrom)
+                    requireModule.requiredFrom = module;
+
+                this.checkCircular(module, requireModule.name);
+
+                if (!requireModule.loaded) {
                     load = false;
-                    this.loadScript(requireModule.name, module.name, requireModule.pathName);
-                } else if (!requireModule.loaded) {
-                    load = false;
+                    this.loadModule(requireModule, module);
                 }
             }
 
-            //если еще не загружал
-            if (!this._modules[module.name]) {
+            if (load && !this._modules[module.name]) {
                 load = false;
-                this.loadScript(module.name, requiredFrom.name, module.pathName);
+                this.loadScript(module.name, requiredFrom, module.pathName);
             }
+
 
             return (load && module.scriptLoaded);
         },
@@ -224,16 +235,6 @@
             //если загружен хоть один модуль - запускаю проверку повторно
             if (moduleLoaded) this.process();
 
-
-            if (this._loadingCountScripts == 0 &&
-                this._loadingCountModules < this._countModules) {
-                var unresolved = [];
-                for (var i in this._loadingModules) {
-                    if (!this._loadingModules.hasOwnProperty(i)) continue;
-                    unresolved.push(this._loadingModules[i].name);
-                }
-                throw ('Unresolved (circular?) dependencies: ' + unresolved.join(', '));
-            }
         },
         onProgress: function (count, val){
 //            if (count <= 0) return;
@@ -268,7 +269,9 @@
             }
 
             function onLoad(){
+                console.log('loaded:', name);
                 me._modules[name].scriptLoaded = true;
+                me._loadingModules[name].scriptLoaded = true;
                 me._loadingCountScripts--;
                 me.process();
             }
@@ -277,11 +280,11 @@
             this._loadingCountScripts++;
             if (this.synchronous) {
                 this.injectScript(url, onLoad, function (){
-                    throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
+                    throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom.name);
                 }, this)
             } else {
                 this.loadXHRScript(url, onLoad, function (){
-                    throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom);
+                    throw ('Failed to load module/class ' + name + ' at ' + url + ' ' + 'required from ' + requiredFrom.name);
                 }, this)
             }
         },
