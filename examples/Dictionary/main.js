@@ -15,7 +15,7 @@ Mix.config({
         ],
         body: function (){
 
-            $('body').html('Натуля, привет!');
+            $('body').html('Это работает!');
 
         }
     });
