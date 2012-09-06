@@ -269,7 +269,6 @@
             }
 
             function onLoad(){
-                console.log('loaded:', name);
                 me._modules[name].scriptLoaded = true;
                 me._loadingModules[name].scriptLoaded = true;
                 me._loadingCountScripts--;
